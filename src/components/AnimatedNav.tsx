@@ -15,17 +15,17 @@ const navItems = [
 
 const socials = [
 	{
-		href: "https://github.com/archerchua",
+		href: "https://github.com/teaonrocks",
 		label: "GitHub",
 		icon: Github,
 	},
 	{
-		href: "https://linkedin.com/in/archerchua",
+		href: "https://www.linkedin.com/in/archer-chua-4007401a2/",
 		label: "LinkedIn",
 		icon: Linkedin,
 	},
 	{
-		href: "https://twitter.com/archerchua",
+		href: "https://twitter.com/teaonrocks",
 		label: "Twitter",
 		icon: Twitter,
 	},
@@ -33,7 +33,7 @@ const socials = [
 		href: "email",
 		label: "Email",
 		icon: Mail,
-		email: "archer@example.com",
+		email: "arxherchua@gmail.com",
 	},
 ];
 
