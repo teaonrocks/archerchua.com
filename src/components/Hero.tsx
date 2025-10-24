@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { toast } from "sonner";
 
 export function Hero() {
 	return (
@@ -76,14 +77,23 @@ export function Hero() {
 					>
 						View Projects
 					</motion.a>
-					<motion.a
-						href="#contact"
+					<motion.button
+						type="button"
+						onClick={async () => {
+							const email = "arxherchua@gmail.com";
+							try {
+								await navigator.clipboard.writeText(email);
+								toast.success("Email copied to clipboard!");
+							} catch (e) {
+								toast.error("Could not copy email. Please copy manually.");
+							}
+						}}
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
 						className="px-6 py-3 border border-primary text-primary rounded-md font-medium hover:bg-primary/10 transition-colors"
 					>
 						Get in Touch
-					</motion.a>
+					</motion.button>
 				</motion.div>
 			</motion.div>
 		</div>
