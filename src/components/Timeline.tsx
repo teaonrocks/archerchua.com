@@ -106,7 +106,7 @@ function TimelineItem({ item, index, type }: TimelineItemProps) {
 			transition={{ duration: 0.5, delay: index * 0.1 }}
 			className="relative"
 		>
-			<div className="flex items-center gap-4 mb-4">
+			<div className="flex items-center justify-center md:justify-start gap-4 mb-4">
 				{/* Timeline dot */}
 				<div className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg">
 					<Icon className="w-6 h-6" />
@@ -202,7 +202,7 @@ export function Timeline() {
 					whileInView={{ opacity: 1, x: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6 }}
-					className="flex items-center gap-3"
+					className="flex items-center justify-center md:justify-start gap-3"
 				>
 					<Briefcase className="w-6 h-6 text-primary" />
 					<h3 className="text-2xl md:text-3xl font-bold">
@@ -232,7 +232,7 @@ export function Timeline() {
 					whileInView={{ opacity: 1, x: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6 }}
-					className="flex items-center gap-3"
+					className="flex items-center justify-center md:justify-start gap-3"
 				>
 					<GraduationCap className="w-6 h-6 text-primary" />
 					<h3 className="text-2xl md:text-3xl font-bold">Education</h3>
