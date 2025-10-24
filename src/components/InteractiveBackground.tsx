@@ -31,9 +31,9 @@ export function InteractiveBackground() {
 			{/* Grid background */}
 			<div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:4rem_4rem]" />
 
-			{/* Cursor glow effect */}
+			{/* Cursor glow effect - hidden on mobile */}
 			<motion.div
-				className="absolute w-96 h-96 rounded-full pointer-events-none"
+				className="hidden md:block absolute w-96 h-96 rounded-full pointer-events-none"
 				style={{
 					x: mouseX,
 					y: mouseY,
