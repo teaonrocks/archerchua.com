@@ -20,7 +20,7 @@ const socials = [
 		icon: Github,
 	},
 	{
-		href: "https://www.linkedin.com/in/archer-chua-4007401a2/",
+		href: "https://www.linkedin.com/in/archerchua",
 		label: "LinkedIn",
 		icon: Linkedin,
 	},
