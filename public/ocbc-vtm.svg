@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+	<defs>
+		<linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#0f172a" />
+			<stop offset="100%" stop-color="#1d4ed8" />
+		</linearGradient>
+		<linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
+			<stop offset="100%" stop-color="#ffffff" stop-opacity="0.05" />
+		</linearGradient>
+	</defs>
+	<rect width="1200" height="675" fill="url(#bg)" rx="32" />
+	<g fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.3">
+		<path d="M100 300 Q 300 150 500 260 T 900 260" />
+		<path d="M150 420 Q 350 540 520 430 T 1050 430" />
+		<path d="M80 520 Q 260 360 430 520 T 1120 520" />
+	</g>
+	<g transform="translate(140 130)">
+		<rect width="480" height="360" rx="32" fill="url(#card)" stroke="rgba(255,255,255,0.2)" />
+		<rect x="40" y="60" width="400" height="60" rx="12" fill="rgba(15,23,42,0.85)" />
+		<rect x="40" y="150" width="280" height="40" rx="10" fill="rgba(59,130,246,0.6)" />
+		<rect x="40" y="210" width="360" height="24" rx="6" fill="rgba(148,163,184,0.8)" />
+		<rect x="40" y="250" width="360" height="24" rx="6" fill="rgba(148,163,184,0.5)" />
+		<rect x="40" y="290" width="200" height="24" rx="6" fill="rgba(203,213,225,0.5)" />
+		<circle cx="400" cy="90" r="18" fill="#f97316" opacity="0.8" />
+		<text x="40" y="40" font-family="'Inter', sans-serif" font-size="20" fill="#e2e8f0">
+			OCBC • Kiosk Flow
+		</text>
+	</g>
+	<g transform="translate(660 180)">
+		<rect width="360" height="300" rx="24" fill="rgba(2,6,23,0.65)" stroke="rgba(255,255,255,0.12)" />
+		<rect x="40" y="50" width="280" height="24" rx="8" fill="rgba(59,130,246,0.7)" />
+		<rect x="40" y="90" width="220" height="18" rx="6" fill="rgba(148,163,184,0.6)" />
+		<rect x="40" y="120" width="240" height="18" rx="6" fill="rgba(148,163,184,0.4)" />
+		<rect x="40" y="150" width="180" height="18" rx="6" fill="rgba(148,163,184,0.3)" />
+		<rect x="40" y="220" width="120" height="36" rx="10" fill="#22d3ee" opacity="0.7" />
+		<rect x="180" y="220" width="120" height="36" rx="10" fill="#f472b6" opacity="0.5" />
+		<circle cx="40" cy="200" r="6" fill="#facc15" />
+		<circle cx="70" cy="200" r="6" fill="#22d3ee" />
+		<circle cx="100" cy="200" r="6" fill="#f472b6" />
+		<text x="40" y="30" font-family="'Inter', sans-serif" font-size="18" fill="#cbd5f5">
+			Live Agent Assist
+		</text>
+	</g>
+	<text x="120" y="560" font-family="'Inter', sans-serif" font-size="28" fill="#f8fafc">
+		OCBC Smart Banking Kiosk • Whisper + Ollama + WebRTC
+	</text>
+	<text x="120" y="600" font-family="'Inter', sans-serif" font-size="18" fill="#cbd5f5">
+		Voice intent • Guided Workflows • Remote Teller Escalation
+	</text>
+</svg>

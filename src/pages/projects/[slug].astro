@@ -1,0 +1,201 @@
+---
+import ProjectLayout from "@/layouts/ProjectLayout.astro";
+import { getAllProjects, type Project } from "@/lib/projects";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Github, ExternalLink, ArrowLeft, Download } from "lucide-react";
+import { OcbcVtmIllustrationV2 } from "@/components/illustrations/OcbcVtmIllustrationV2";
+import { CardanoMintIllustrationV2 } from "@/components/illustrations/CardanoMintIllustrationV2";
+import { InvoiceThingIllustration } from "@/components/illustrations/InvoiceThingIllustration";
+import { HimaDiscordIllustrationV2 } from "@/components/illustrations/HimaDiscordIllustrationV2";
+import { OneDayAtATimeIllustration } from "@/components/illustrations/OneDayAtATimeIllustration";
+import { LostInTheStarsIllustration } from "@/components/illustrations/LostInTheStarsIllustration";
+import { getEntryBySlug } from "astro:content";
+import { ProjectGallery } from "@/components/ProjectGallery";
+
+export async function getStaticPaths() {
+	const projects = getAllProjects().filter(
+		(project) => project.hasCaseStudy !== false
+	);
+	return projects.map((project) => ({
+		params: { slug: project.slug },
+		props: { project },
+	}));
+}
+
+interface Props {
+	project: Project;
+}
+
+const { project } = Astro.props;
+const contentEntry = await getEntryBySlug("projects", project.slug);
+const renderedContent = contentEntry ? await contentEntry.render() : null;
+const Content = renderedContent?.Content;
+---
+
+<ProjectLayout title={project.title} description={project.description}>
+	<article class="max-w-4xl mx-auto px-4 py-12 space-y-16">
+		{/* Header Section */}
+		<div class="space-y-8">
+			<a
+				href="/#projects"
+				class="inline-flex items-center text-muted-foreground hover:text-primary transition-colors"
+			>
+				<ArrowLeft className="w-4 h-4 mr-2" />
+				Back to Projects
+			</a>
+
+			<div class="space-y-4">
+				<div class="flex flex-wrap gap-2">
+					{
+						project.categories.map((cat) => (
+							<Badge key={cat} variant="secondary" className="text-sm">
+								{cat.toUpperCase()}
+							</Badge>
+						))
+					}
+				</div>
+				<h1 class="text-4xl md:text-5xl font-bold">{project.title}</h1>
+				<p class="text-xl text-muted-foreground leading-relaxed">
+					{project.longDescription}
+				</p>
+			</div>
+
+			<div class="flex flex-wrap gap-4">
+				{
+					project.github && (
+						<Button asChild variant="outline">
+							<a
+								href={project.github}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="flex items-center gap-2"
+							>
+								<Github className="w-4 h-4" />
+								View Source
+							</a>
+						</Button>
+					)
+				}
+				{
+					project.demo && (
+						<Button asChild>
+							<a
+								href={project.demo}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="flex items-center gap-2"
+							>
+								<ExternalLink className="w-4 h-4" />
+								Live Demo
+							</a>
+						</Button>
+					)
+				}
+				{
+					project.gdd && (
+						<Button asChild variant="outline">
+							<a
+								href={project.gdd}
+								download="Lost In The Stars GDD.pdf"
+								class="flex items-center gap-2"
+							>
+								<Download className="w-4 h-4" />
+								Download GDD
+							</a>
+						</Button>
+					)
+				}
+			</div>
+		</div>
+
+		{/* Media + Sidebar */}
+		<div class="grid gap-8 items-start md:grid-cols-[2fr,1fr]">
+			<div class="rounded-xl overflow-hidden border bg-muted shadow-lg">
+				{
+					project.slug === "ocbc-vtm-poc" ? (
+						<OcbcVtmIllustrationV2 client:load className="w-full h-full" />
+					) : project.slug === "cardano-nft-minting" ? (
+						<CardanoMintIllustrationV2 client:load className="w-full h-full" />
+					) : project.slug === "invoicething" ? (
+						<InvoiceThingIllustration client:load className="w-full h-full" />
+					) : project.slug === "hima-discord-bots" ? (
+						<HimaDiscordIllustrationV2 client:load className="w-full h-full" />
+					) : project.slug === "one-day-at-a-time" ? (
+						<OneDayAtATimeIllustration client:load className="w-full h-full" />
+					) : project.slug === "lost-in-the-stars" ? (
+						<LostInTheStarsIllustration client:load className="w-full h-full" />
+					) : project.video ? (
+						<video
+							src={project.video}
+							controls
+							class="w-full aspect-video object-cover"
+						/>
+					) : (
+						<img
+							src={project.image}
+							alt={project.title}
+							class="w-full aspect-video object-cover"
+						/>
+					)
+				}
+			</div>
+
+			<div class="space-y-8">
+				{/* Tech Stack */}
+				<div class="p-6 rounded-xl border bg-card/50 space-y-4">
+					<h3 class="font-bold text-lg">Tech Stack</h3>
+					<div class="flex flex-wrap gap-2">
+						{
+							project.tags.map((tag) => (
+								<Badge variant="outline" className="bg-background">
+									{tag}
+								</Badge>
+							))
+						}
+					</div>
+				</div>
+
+				{/* Key Highlights */}
+				<div class="p-6 rounded-xl border bg-card/50 space-y-4">
+					<h3 class="font-bold text-lg">Key Highlights</h3>
+					<ul class="space-y-2 text-sm text-muted-foreground">
+						{
+							project.highlights.map((highlight) => (
+								<li class="flex gap-2">
+									<span class="text-primary shrink-0">•</span>
+									{highlight}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		{/* Case Study Content */}
+		<div>
+			{
+				Content ? (
+					<div class="case-study-content">
+						<Content />
+					</div>
+				) : (
+					<div class="case-study-content text-muted-foreground">
+						<p>
+							I'm still writing this case study. Check back soon for a more
+							casual journal-style breakdown of how this project came together.
+						</p>
+					</div>
+				)
+			}
+		</div>
+
+		{/* Image Gallery */}
+		{
+			project.images && project.images.length > 0 && (
+				<ProjectGallery client:load images={project.images} />
+			)
+		}
+	</article>
+</ProjectLayout>

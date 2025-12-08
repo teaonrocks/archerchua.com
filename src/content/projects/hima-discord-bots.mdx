@@ -1,0 +1,62 @@
+---
+title: "HIMA Discord Bots & API"
+summary: "Discord-native automation for NFT communities."
+published: false
+---
+
+When my friends and I launched our Cardano NFT project, we needed a way to keep our community engaged and reward our holders consistently. I was still early in my programming journey, so I turned that need into a learning project and built a Discord bot system that became my crash course in real-world software development.
+
+The result was **HIMA-discord**, a three-bot ecosystem that served hundreds of users and taught me lessons no tutorial could match.
+
+## The Solution
+
+HIMA-discord is a Discord bot system for NFT communities built around three specialized bots and a FastAPI backend. The Attendance Bot handles daily check-ins, streaks, and leaderboards. The Points Bot runs interactive trivia that rewards participation and boosts scores for NFT holders. The Shop Bot lets users redeem accumulated points for roles and digital perks, turning engagement into a small in-server economy.
+
+## Design Rationale
+
+### Why Three Bots?
+
+I chose to split the system into three separate bots for a few reasons. First, separation of concerns kept each one focused: if the Points Bot crashed, attendance tracking continued unaffected, and debugging stayed manageable instead of turning into a tangle of cross-cutting features. Second, thinking in modules let me ship faster. I built the Attendance Bot first, learned what broke under real usage, then folded those lessons into the Points Bot and later the Shop Bot. Finally, Discord's rate limits made this architecture practical. Daily check-ins, rapid-fire trivia, and occasional shop purchases each have different traffic patterns, and distributing them across multiple bot tokens helped us stay clear of rate limits during peak activity.
+
+### Technical Stack Choices
+
+When Discord.py was deprecated, PyCord became the natural successor. Its active maintenance, slash command support, and solid documentation were essential for a beginner trying to build non-trivial interactions. On the backend, I paired FastAPI with SQLite. FastAPI's type hints and automatic docs helped me catch mistakes early and reason about the API surface, while SQLite avoided the overhead of running and maintaining a separate database server for what was, in practice, a single-VPS deployment with moderate traffic.
+
+## Challenges & Learning
+
+### From Tutorials to Documentation
+
+YouTube tutorials show ideal scenarios. Production shows every edge case. When the Attendance Bot double-counted check-ins during Discord outages, there was no tutorial that matched my exact problem. I had to read PyCord's documentation on event loops and SQLite's transaction handling.
+
+That bug shifted my learning from passive video watching to actively reading documentation and source. Function signatures and inline comments surfaced edge cases and guarantees that no tutorial had mentioned.
+
+### Debugging Under Pressure
+
+My first production bug struck during a community event with 200+ active users when the Points Bot stopped responding. I had about 15 minutes to fix it.
+
+That experience taught me to keep real-time logs open during events, add debug commands that can dump system state on demand, implement graceful degradation paths instead of hard failures, and communicate honestly with users when things break. I added comprehensive error logging and a status command that same night, and from then on I tried to prevent incidents instead of only reacting to them.
+
+### Real Users Break Everything
+
+Hundreds of users quickly find bugs that solo testing will never reveal. They use commands out of order, send malformed data, and sometimes try to game the system just to see what happens. One user even managed to crash the Points Bot by answering trivia with a stream of emoji reactions—an input path I had never considered or tested. After that, every input went through validation before the bot attempted to process it.
+
+## What I'd Do Differently
+
+If I were to rebuild HIMA-discord today, I'd start with a few fundamentals. Secrets would live in environment variables from day one instead of being hardcoded and migrated later in a mild panic. I'd introduce feature flags around risky commands so I could switch them off instantly without taking the whole bot offline. I'd add basic metrics about command usage so prioritisation was based on real behaviour rather than gut feeling. And I'd write at least a small suite of unit tests around the critical attendance and points logic instead of relying entirely on manual testing and hoping nothing broke during live events.
+
+## Impact
+
+HIMA-discord served hundreds of users across our NFT community, handling thousands of attendance checks, trivia questions, and shop transactions. It created a closed-loop economy that increased daily engagement and tied our token utility directly to community participation.
+
+More importantly, it demonstrated that I could:
+
+- Architect a system that scaled from 0 to 500+ users
+- Make technical decisions under real constraints
+- Debug production issues under pressure
+- Iterate based on community feedback
+
+## Conclusion
+
+HIMA-discord started as a simple attendance tracker and evolved into a full community ecosystem. The codebase still has TODO comments and some repetitive sections, but it did the important thing: it ran reliably enough that the community trusted it.
+
+This project moved me from following tutorials to solving real problems for real people. It showed me that good software comes from understanding user needs and embracing production realities. Every bug became a lesson, and every user complaint was feedback that shaped a better system.

@@ -9,8 +9,8 @@ import {
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 
 const navItems = [
-	{ href: "#about", label: "About" },
-	{ href: "#projects", label: "Projects" },
+	{ href: "/#about", label: "About" },
+	{ href: "/#projects", label: "Projects" },
 ];
 
 const socials = [
@@ -43,9 +43,15 @@ export function AnimatedNav() {
 		href: string
 	) => {
 		e.preventDefault();
-		const element = document.querySelector(href);
-		if (element) {
-			element.scrollIntoView({ behavior: "smooth" });
+
+		if (window.location.pathname === "/") {
+			const hash = href.substring(href.indexOf("#"));
+			const element = document.querySelector(hash);
+			if (element) {
+				element.scrollIntoView({ behavior: "smooth" });
+			}
+		} else {
+			window.location.href = href;
 		}
 	};
 

@@ -59,8 +59,9 @@ export function Hero() {
 					transition={{ duration: 0.6, delay: 0.8 }}
 					className="text-base md:text-lg text-muted-foreground"
 				>
-					Building with React, TypeScript, and cutting-edge tools to create
-					exceptional digital experiences that make a difference.
+					Building with React, TypeScript, and cutting-edge tools. I document my
+					process through detailed case studies that explore the "why" and "how"
+					behind each project.
 				</motion.p>
 
 				<motion.div

@@ -1,0 +1,70 @@
+---
+title: "Lost in the Stars"
+summary: "VR escape room capstone project."
+published: false
+---
+
+For my C337 Immersive Technologies module in my Diploma in Digital Design and Development, the brief was simple: build a VR escape room. I was still new to spatial design, physics interactions, and VR performance, so the project quickly became a crash course in immersive development.
+
+The result was **Lost in the Stars**, a 30–45 minute VR puzzle game set in an abandoned observatory that taught me how to design for presence, iterate on interaction mechanics, and ship a complete experience under a tight deadline.
+
+## The Solution
+
+Lost in the Stars is a single-player VR escape room where players solve astronomy-themed puzzles to uncover the fate of a missing astronomer. The experience includes four core puzzles, a two-story observatory environment, and physics-based hand interactions built for Meta Quest 2/3 and PC VR.
+
+## Design Rationale
+
+### Why Astronomy Theme?
+
+The astronomy theme gave me natural puzzle vocabulary. Telescopes, star charts, orreries, and constellations are recognizable objects with built-in interaction patterns. An observatory naturally plays with light and shadow, perfect for a moody aesthetic. The theme also created a clear narrative hook: a missing astronomer who left puzzles as a final message.
+
+### Why Low-Poly Art Style?
+
+I leaned into a low-poly art style for two main reasons. First, it matched my skills at the time. I was learning Blender as I built the game, and low-poly modelling is far more forgiving for beginners; small topology mistakes don't stand out as much, and simple shapes with flat shading can still feel intentional rather than amateur. Second, the stylised look created a slightly dreamlike atmosphere that actually worked in my favour. A realistic observatory would have exposed every texturing flaw, while the low-poly style kept the world cohesive and believable despite my inexperience.
+
+### The Telescope Pivot: A VR Design Lesson
+
+My original vision for the telescope puzzle had players looking through the telescope in first-person, controlling the view with their head movement. It felt immersive in theory. In practice, it was nauseating. The disconnect between head movement and the viewport's delayed response caused immediate discomfort.
+
+I pivoted to a D-pad control console next to the telescope. Players press physical buttons to aim the telescope, viewing the results on a screen. This maintained the puzzle's core challenge while eliminating motion sickness. It taught me that VR interaction design has to prioritise comfort over novelty. Immersion means nothing if players feel sick.
+
+## Challenges & Learning
+
+### Orrery Planet Placement
+
+The orrery puzzle requires placing planets on correct orbital spokes. My initial implementation used trigger colliders, but planets would snap to the wrong spoke if players weren't precise.
+
+I solved this by adding visual guides: when a planet drifts near its correct spoke, the spoke glows, and when it's placed correctly it snaps in with a satisfying click sound and a small burst of haptic feedback. That one change taught me how important clear feedback systems are, especially in VR where precision is harder and players need strong signals that the game has understood their actions.
+
+### The Power Breaker Sequence
+
+The breaker puzzle requires flipping switches in a specific order. My first build let players flip switches instantly, which meant they could brute-force the solution in seconds.
+
+I added a state machine that tracked the sequence. If a player flipped the wrong switch, all switches reset with a loud buzzer sound. I also added a short animation delay between flips. This made the puzzle feel deliberate and prevented brute forcing.
+
+### Time Management
+
+Following the milestone schedule was critical. I learned to prioritise core interactions above everything else—the telescope D-pad alone took three days to feel right and, in hindsight, should have been prototyped before I invested time in modelling. I also learned not to wait too long before testing on real hardware; spending two weeks in the Unity editor before trying the build on a headset surfaced major performance and comfort issues that forced refactors I could have avoided. Cutting scope early turned out to be just as important. Voice-over narration and complex ambient soundscapes never made it into the final build, but deciding that upfront probably saved me from a brutal last-minute crunch.
+
+## What I'd Do Differently
+
+If I were to build a spiritual successor, I would start with interaction prototypes instead of detailed environments: a telescope D-pad in a greybox scene would have revealed more than a beautifully lit room with half-working mechanics. I'd also commit to building puzzles sequentially, taking each one from rough concept to polished experience before moving on, rather than juggling four half-finished ideas with hidden dependencies. A simple save system would be non-negotiable so players and testers aren't forced to finish everything in one sitting. And I would wire in haptic feedback from the very beginning, tuning it alongside visuals and sound instead of bolting it on in the final week.
+
+## Impact
+
+Lost in the Stars achieved its goals for the C337 assignment:
+
+- **Complete game loop**: The telescope puzzle demonstrates the full observe-discover-solve-unlock progression
+- **Technical competency**: Physics interactions, teleportation, and VR UI all function reliably
+- **Artistic vision**: The low-poly aesthetic and atmospheric lighting create a cohesive mood
+- **Portfolio piece**: The project showcases skills in 3D modeling, Unity development, and VR design
+
+The game was submitted as the final graded assignment and received positive feedback for its interaction design and environmental storytelling. More importantly, it gave me a complete VR project that demonstrates my ability to build immersive experiences from concept to deployment.
+
+## Conclusion
+
+Building Lost in the Stars taught me that VR development is as much about iteration and playtesting as it is about coding. The difference between a functional puzzle and a fun puzzle is subtle feedback, clear affordances, and performance that never breaks presence.
+
+The project has rough edges. Some puzzles lack audio feedback, the environment could use more props, and the narrative voice-over wasn't implemented due to time constraints. But the core experience works. Players can enter the observatory, solve puzzles, and feel immersed in the world.
+
+This project became the foundation for my understanding of immersive technologies. It taught me that in VR, every interaction must feel physical, every frame matters for comfort, and every design decision must serve presence. The experience transformed me from someone who had used VR to someone who could build for it.

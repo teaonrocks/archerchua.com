@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/sheet";
 
 const navItems = [
-	{ href: "#about", label: "About" },
-	{ href: "#projects", label: "Projects" },
+	{ href: "/#about", label: "About" },
+	{ href: "/#projects", label: "Projects" },
 ];
 
 const socials = [
@@ -46,10 +46,18 @@ export function MobileNav() {
 
 	const handleNavClick = (href: string) => {
 		setOpen(false);
-		// Smooth scroll to section
-		const element = document.querySelector(href);
-		if (element) {
-			element.scrollIntoView({ behavior: "smooth" });
+
+		// Check if we're on the home page
+		if (window.location.pathname === "/") {
+			// Extract the hash from the href (e.g., "/#about" -> "#about")
+			const hash = href.substring(href.indexOf("#"));
+			const element = document.querySelector(hash);
+			if (element) {
+				element.scrollIntoView({ behavior: "smooth" });
+			}
+		} else {
+			// If not on home page, navigate to the link
+			window.location.href = href;
 		}
 	};
 
