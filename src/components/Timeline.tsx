@@ -26,6 +26,7 @@ const education = [
 			"Participated in DSTA Brainhack CODE_EXP 2025",
 			"Participated in Mission X by Youth Corps Singapore",
 			"Participated in University of Glasgow Hackathon 2025",
+			"Participated in OCBC Ignite Innovation Challenge 2025",
 		],
 	},
 	{
