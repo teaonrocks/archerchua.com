@@ -7,7 +7,15 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Briefcase, Calendar } from "lucide-react";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@/components/ui/tabs";
+import { GraduationCap, Briefcase, Calendar, Award, ExternalLink } from "lucide-react";
+import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 // Sample data - replace with your actual education and experience
 const education = [
@@ -88,6 +96,99 @@ const experience = [
 		],
 	},
 ];
+
+const certificateFiles = [
+	"CertificateOfCompletion_Building Modern UIs with React Router v6.pdf",
+	"CertificateOfCompletion_Google Analytics 4 GA4 Essential Training.pdf",
+	"CertificateOfCompletion_HandsOn Introduction React.pdf",
+	"CertificateOfCompletion_ISTQB Foundation Cert Prep.pdf",
+	"CertificateOfCompletion_Illustrator 2023 Quick Start.pdf",
+	"CertificateOfCompletion_JavaScript Web Form Programming.pdf",
+	"CertificateOfCompletion_Learning Jira Cloud Edition 2020 (1).pdf",
+	"CertificateOfCompletion_Learning Jira Cloud Edition 2020.pdf",
+	"CertificateOfCompletion_Node.js Essential Training.pdf",
+	"CertificateOfCompletion_Photoshop 2021 Quick Start.pdf",
+	"CertificateOfCompletion_Programming Foundations APIs and Web Services 2019.pdf",
+	"CertificateOfCompletion_Programming Foundations Software TestingQA.pdf",
+	"CertificateOfCompletion_Software Testing Foundations Bug Writing and Management (1).pdf",
+	"CertificateOfCompletion_Software Testing Foundations Bug Writing and Management.pdf",
+	"CertificateOfCompletion_Software Testing Foundations Test Planning.pdf",
+	"CertificateOfCompletion_Unit Testing and Test Driven Development in Python.pdf",
+	"HackerRank-React-Basic.png",
+	"HackerRank-React.png",
+	"MXP_C39_JUN_2025_Cert.pdf",
+	"Project Management Foundations Certificate NASBA.pdf",
+	"Project Management Foundations Certificate PMI.pdf",
+	"Project Management Foundations Certificate.pdf",
+	"Software Testing Foundations Certificate.pdf",
+];
+
+const formatCertificateName = (filename: string) => {
+	const withoutExt = filename.replace(/\.[^/.]+$/, "");
+	return withoutExt
+		.replace(/^CertificateOfCompletion_/, "")
+		.replace(/_/g, " ")
+		.replace(/\s+\(\d+\)$/, "")
+		.trim();
+};
+
+const inferIssuer = (filename: string) => {
+	if (filename.startsWith("HackerRank-")) return "HackerRank";
+	if (filename.startsWith("MXP_")) return "Mission X Programme";
+	if (
+		filename.startsWith("CertificateOfCompletion_") ||
+		filename.includes("Foundations Certificate")
+	) {
+		return "LinkedIn Learning";
+	}
+	return "Certification Provider";
+};
+
+const inferIssued = (filename: string) => {
+	const year = filename.match(/(20\d{2})/)?.[1];
+	return year ?? "See certificate";
+};
+
+const inferCategory = (certificateName: string) => {
+	const name = certificateName.toLowerCase();
+
+	if (name.includes("testing") || name.includes("istqb") || name.includes("qa")) {
+		return "testing";
+	}
+
+	if (name.includes("project management") || name.includes("jira")) {
+		return "project-management";
+	}
+
+	if (name.includes("illustrator") || name.includes("photoshop")) {
+		return "design";
+	}
+
+	if (
+		name.includes("react") ||
+		name.includes("javascript") ||
+		name.includes("node") ||
+		name.includes("python") ||
+		name.includes("api") ||
+		name.includes("web services")
+	) {
+		return "development";
+	}
+
+	return "other";
+};
+
+const certifications = certificateFiles.map((file, index) => ({
+	name: formatCertificateName(file),
+	id: index + 1,
+	issuer: inferIssuer(file),
+	issued: inferIssued(file),
+	file,
+	format: file.toLowerCase().endsWith(".pdf") ? "PDF" : "Image",
+	category: inferCategory(formatCertificateName(file)),
+}));
+
+const featuredCertifications = certifications.slice(0, 6);
 
 interface TimelineItemProps {
 	item: any;
@@ -178,6 +279,46 @@ function TimelineItem({ item, index, type }: TimelineItemProps) {
 }
 
 export function Timeline() {
+	const certificationTabs = useMemo(
+		() => [
+			{ value: "featured", label: "Featured", count: featuredCertifications.length },
+			{ value: "all", label: "All", count: certifications.length },
+			{
+				value: "development",
+				label: "Development",
+				count: certifications.filter((cert) => cert.category === "development").length,
+			},
+			{
+				value: "testing",
+				label: "Testing",
+				count: certifications.filter((cert) => cert.category === "testing").length,
+			},
+			{
+				value: "design",
+				label: "Design",
+				count: certifications.filter((cert) => cert.category === "design").length,
+			},
+			{
+				value: "project-management",
+				label: "Project Management",
+				count: certifications.filter((cert) => cert.category === "project-management")
+					.length,
+			},
+			{
+				value: "other",
+				label: "Other",
+				count: certifications.filter((cert) => cert.category === "other").length,
+			},
+		],
+		[]
+	);
+
+	const getCertificationsForTab = (tab: string) => {
+		if (tab === "featured") return featuredCertifications;
+		if (tab === "all") return certifications;
+		return certifications.filter((cert) => cert.category === tab);
+	};
+
 	return (
 		<div className="max-w-5xl mx-auto space-y-16">
 			{/* Section Header */}
@@ -252,6 +393,85 @@ export function Timeline() {
 						/>
 					))}
 				</div>
+			</div>
+
+			{/* Certifications Section */}
+			<div className="space-y-8">
+				<motion.div
+					initial={{ opacity: 0, x: -20 }}
+					whileInView={{ opacity: 1, x: 0 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.6 }}
+					className="flex items-center justify-center md:justify-start gap-3"
+				>
+					<Award className="w-6 h-6 text-primary" />
+					<h3 className="text-2xl md:text-3xl font-bold">Certifications</h3>
+				</motion.div>
+
+				<Tabs defaultValue="featured" className="space-y-6">
+					<TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0">
+						{certificationTabs.map((tab) => (
+							<TabsTrigger
+								key={tab.value}
+								value={tab.value}
+								className={cn(
+									"group flex-none h-auto rounded-full px-4 py-2 text-sm font-medium transition-all border flex items-center gap-2",
+									"data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-md",
+									"data-[state=inactive]:bg-background data-[state=inactive]:text-muted-foreground data-[state=inactive]:border-border data-[state=inactive]:hover:border-primary/50 data-[state=inactive]:hover:text-foreground data-[state=inactive]:hover:bg-accent"
+								)}
+							>
+								{tab.label}
+								<span className="text-xs px-1.5 py-0.5 rounded-full bg-muted group-data-[state=active]:bg-primary-foreground/20">
+									{tab.count}
+								</span>
+							</TabsTrigger>
+						))}
+					</TabsList>
+
+					{certificationTabs.map((tab) => {
+						const filtered = getCertificationsForTab(tab.value);
+
+						return (
+							<TabsContent key={tab.value} value={tab.value}>
+								<div className="grid gap-4 md:grid-cols-2">
+									{filtered.map((cert, index) => (
+										<motion.div
+											key={`${tab.value}-${cert.id}`}
+											initial={{ opacity: 0, y: 20 }}
+											whileInView={{ opacity: 1, y: 0 }}
+											viewport={{ once: true, amount: 0.3 }}
+											transition={{ duration: 0.5, delay: index * 0.08 }}
+										>
+											<Card className="h-full hover:shadow-lg transition-shadow duration-300">
+												<CardHeader className="space-y-3">
+													<CardTitle className="text-lg md:text-xl">{cert.name}</CardTitle>
+													<CardDescription className="text-base font-medium text-foreground">
+														{cert.issuer}
+													</CardDescription>
+													<div className="flex flex-wrap gap-2">
+														<Badge variant="secondary">Issued {cert.issued}</Badge>
+														<Badge variant="outline">{cert.format}</Badge>
+													</div>
+												</CardHeader>
+												<CardContent className="space-y-4">
+													<a
+														href={`/certificates/${encodeURIComponent(cert.file)}`}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+													>
+														View credential
+														<ExternalLink className="w-3.5 h-3.5" />
+													</a>
+												</CardContent>
+											</Card>
+										</motion.div>
+									))}
+								</div>
+							</TabsContent>
+						);
+					})}
+				</Tabs>
 			</div>
 		</div>
 	);
