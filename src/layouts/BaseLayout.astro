@@ -30,7 +30,9 @@ const {
 		<title>{title}</title>
 		<script is:inline>
 			const storedTheme = localStorage.getItem("theme");
-			const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+			const prefersDark = window.matchMedia(
+				"(prefers-color-scheme: dark)",
+			).matches;
 			const theme = storedTheme ?? (prefersDark ? "dark" : "light");
 
 			document.documentElement.classList.toggle("dark", theme === "dark");
@@ -41,8 +43,13 @@ const {
 		<div class="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-6 py-8">
 			<header class="flex items-center justify-between gap-6">
 				<div class="flex flex-wrap items-center justify-start gap-4">
-					<nav class="flex gap-4 text-sm text-neutral-500 dark:text-neutral-400">
-						<a class="transition hover:text-neutral-950 dark:hover:text-white" href="/">
+					<nav
+						class="flex gap-4 text-sm text-neutral-500 dark:text-neutral-400"
+					>
+						<a
+							class="transition hover:text-neutral-950 dark:hover:text-white"
+							href="/"
+						>
 							Home
 						</a>
 						<a
@@ -54,8 +61,10 @@ const {
 					</nav>
 				</div>
 				<div class="flex items-center gap-4">
-					<p class="font-heading text-right text-sm font-medium text-neutral-700 dark:text-neutral-300">
-						Mobile Applications Engineer
+					<p
+						class="font-heading text-right text-sm font-medium text-neutral-700 dark:text-neutral-300"
+					>
+						Mobile Applications Engineer @ OCBC
 					</p>
 					<ThemeToggle />
 				</div>

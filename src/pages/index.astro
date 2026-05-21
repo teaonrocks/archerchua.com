@@ -1,5 +1,4 @@
 ---
-import IntroCard from "@/components/IntroCard";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
@@ -7,18 +6,59 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 	<section class="space-y-8">
 		<div class="space-y-4">
 			<h1
+				aria-label="Archer Chua"
 				class="font-heading max-w-2xl text-4xl font-bold tracking-tight text-neutral-950 sm:text-7xl dark:text-white"
+				data-scramble-name
 			>
 				Archer Chua
 			</h1>
 			<p
 				class="font-body max-w-xl text-lg leading-8 text-neutral-600 dark:text-neutral-300"
 			>
-				Hello, I'm Archer. I'm an aspiring software engineer, passionate about
-				technology and building software that solves real world problems. When
-				I'm not commanding my army of AI agents, I'm probably nerding out about
-				audio gear or enjoying a game of mahjong.
+				I'm an aspiring software engineer passionate about technology and
+				building software that solves real world problems. When I'm not
+				commanding my army of AI agents, I'm probably nerding out about audio
+				gear or enjoying a game of mahjong.
 			</p>
 		</div>
 	</section>
+
+	<script is:inline>
+		const nameHeading = document.querySelector("[data-scramble-name]");
+		const finalName = nameHeading?.textContent?.trim() ?? "";
+		const prefersReducedMotion = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+
+		if (nameHeading && finalName && !prefersReducedMotion) {
+			const characters = "AEFHJKMNRSTVWXYacefhmnrstvwxy137?!/\\|";
+			const frameDuration = 36;
+			const revealSpeed = 0.36;
+			let frame = 0;
+
+			const scramble = () => {
+				const nextText = finalName
+					.split("")
+					.map((character, index) => {
+						if (character === " " || index < frame * revealSpeed) {
+							return character;
+						}
+
+						return characters[Math.floor(Math.random() * characters.length)];
+					})
+					.join("");
+
+				nameHeading.textContent = nextText;
+
+				if (frame * revealSpeed < finalName.length) {
+					frame += 1;
+					window.setTimeout(scramble, frameDuration);
+				} else {
+					nameHeading.textContent = finalName;
+				}
+			};
+
+			scramble();
+		}
+	</script>
 </BaseLayout>
