@@ -1,9 +1,31 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { ChevronRight } from "@lucide/astro";
+
+const projects = [
+	{
+		name: "One Day at a Time",
+		href: "/blog/one-day-at-a-time",
+		description:
+			'A real-time, Kahoot-style web app for Youth Corps\' "One Day At A Time" poverty simulation experience, built with React, Next.js, Convex, and Tailwind.',
+	},
+	{
+		name: "InvoiceThing",
+		href: "/blog/invoicething",
+		description:
+			"A full-featured invoice management system for freelancers and small businesses, with invoice templates, client management, payment tracking, and reporting.",
+	},
+	{
+		name: "OCBC Smart Banking Kiosk (VTM)",
+		href: "/blog/ocbc-smart-banking-kiosk-vtm",
+		description:
+			"An AI-assisted virtual teller prototype with voice transcription, local LLM intent routing, guided banking workflows, and WebRTC live-agent escalation.",
+	},
+];
 ---
 
 <BaseLayout>
-	<section class="space-y-8">
+	<section class="space-y-12">
 		<div class="space-y-4">
 			<h1
 				aria-label="Archer Chua"
@@ -22,17 +44,20 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 			</p>
 		</div>
 
-		<div class="space-y-4" data-timeline-section>
+		<div
+			class="space-y-4 border-t border-neutral-200 pt-10 dark:border-neutral-800"
+			data-timeline-section
+		>
 			<div class="flex max-w-2xl items-center justify-between gap-4">
 				<h2
-					class="font-heading text-2xl font-bold tracking-tight text-neutral-950 dark:text-white"
+					class="font-heading text-3xl font-bold tracking-tight text-neutral-950 dark:text-white"
 					data-timeline-heading
 				>
 					Currently
 				</h2>
 				<button
 					type="button"
-					class="rounded-full px-3 py-1 text-sm font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+					class="cursor-pointer rounded-full px-3 py-1 text-sm font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
 					aria-controls="timeline-list"
 					aria-expanded="false"
 					hidden
@@ -201,6 +226,49 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 				</li>
 			</ul>
 		</div>
+
+		<div
+			class="space-y-4 border-t border-neutral-200 pt-10 dark:border-neutral-800"
+		>
+			<div class="flex max-w-2xl items-center justify-between gap-4">
+				<h2
+					class="font-heading text-3xl font-bold tracking-tight text-neutral-950 dark:text-white"
+				>
+					Projects
+				</h2>
+				<a
+					href="https://github.com/teaonrocks"
+					class="rounded-full px-3 py-1 text-sm font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+					target="_blank"
+					rel="noreferrer"
+				>
+					View all
+				</a>
+			</div>
+			<ul class="max-w-2xl space-y-5">
+				{
+					projects.map((project) => (
+						<li>
+							<a
+								class="group block transition hover:translate-x-1"
+								href={project.href}
+							>
+								<h3 class="font-heading text-xl font-semibold text-neutral-950 transition group-hover:text-neutral-600 dark:text-white dark:group-hover:text-neutral-300">
+									{project.name}
+									<ChevronRight
+										aria-hidden="true"
+										class="ml-1 inline-block size-5 align-[-0.175em] text-neutral-400 transition group-hover:translate-x-1 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300"
+									/>
+								</h3>
+								<p class="mt-2 leading-7 text-neutral-600 transition group-hover:text-neutral-800 dark:text-neutral-300 dark:group-hover:text-neutral-200">
+									{project.description}
+								</p>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
 	</section>
 
 	<script is:inline>
@@ -212,6 +280,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 		const timelineToggle = timelineSection?.querySelector(
 			"[data-timeline-toggle]",
 		);
+		const timelineList = timelineSection?.querySelector("#timeline-list");
 		const expandedItems =
 			timelineSection?.querySelectorAll("[data-expanded-only]") ?? [];
 		const prefersReducedMotion = window.matchMedia(
@@ -220,50 +289,90 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 		const characters = "AEFHJKMNRSTVWXYacefhmnrstvwxy137?!/\\|";
 		const frameDuration = 24;
 		const revealSpeed = 0.56;
+		const timelineDuration = 300;
+		let timelineHeightTimeout;
+		const scrambleRuns = new WeakMap();
+
+		const getCollapsedTimelineHeight = () => {
+			const visibleItems =
+				timelineList?.querySelectorAll("li:not([data-expanded-only])") ?? [];
+			const lastVisibleItem = visibleItems[visibleItems.length - 1];
+
+			if (!lastVisibleItem) {
+				return timelineList?.offsetHeight ?? 0;
+			}
+
+			return lastVisibleItem.offsetTop + lastVisibleItem.offsetHeight;
+		};
 
 		const scrambleText = (element, finalText) => {
-			if (!element || !finalText) {
-				return;
-			}
-
-			if (prefersReducedMotion) {
-				element.textContent = finalText;
-				return;
-			}
-
-			let frame = 0;
-
-			const scramble = () => {
-				const nextText = finalText
-					.split("")
-					.map((character, index) => {
-						if (character === " " || index < frame * revealSpeed) {
-							return character;
-						}
-
-						return characters[Math.floor(Math.random() * characters.length)];
-					})
-					.join("");
-
-				element.textContent = nextText;
-
-				if (frame * revealSpeed < finalText.length) {
-					frame += 1;
-					window.setTimeout(scramble, frameDuration);
-				} else {
-					element.textContent = finalText;
+			return new Promise((resolve) => {
+				if (!element || !finalText) {
+					resolve(false);
+					return;
 				}
-			};
 
-			scramble();
+				const run = (scrambleRuns.get(element) ?? 0) + 1;
+				scrambleRuns.set(element, run);
+
+				if (prefersReducedMotion) {
+					element.textContent = finalText;
+					resolve(true);
+					return;
+				}
+
+				let frame = 0;
+
+				const scramble = () => {
+					if (scrambleRuns.get(element) !== run) {
+						resolve(false);
+						return;
+					}
+
+					const nextText = finalText
+						.split("")
+						.map((character, index) => {
+							if (character === " " || index < frame * revealSpeed) {
+								return character;
+							}
+
+							return characters[Math.floor(Math.random() * characters.length)];
+						})
+						.join("");
+
+					element.textContent = nextText;
+
+					if (frame * revealSpeed < finalText.length) {
+						frame += 1;
+						window.setTimeout(scramble, frameDuration);
+					} else {
+						element.textContent = finalText;
+						resolve(true);
+					}
+				};
+
+				scramble();
+			});
 		};
 
 		const setExpanded = (isExpanded, shouldAnimateHeading = true) => {
+			const shouldAnimateTimelineHeight =
+				timelineList && !prefersReducedMotion && shouldAnimateHeading;
+			const startHeight = timelineList?.offsetHeight ?? 0;
+
 			if (timelineHeading) {
-				const headingText = isExpanded ? "Work and Education" : "Currently";
+				const headingText = isExpanded ? "Work & Education" : "Currently";
 
 				if (shouldAnimateHeading) {
-					scrambleText(timelineHeading, headingText);
+					if (timelineToggle) {
+						timelineToggle.disabled = true;
+					}
+
+					scrambleText(timelineHeading, headingText).finally(() => {
+						if (timelineToggle) {
+							timelineToggle.disabled = false;
+						}
+					});
 				} else {
 					timelineHeading.textContent = headingText;
 				}
@@ -272,6 +381,19 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 			if (timelineToggle) {
 				timelineToggle.setAttribute("aria-expanded", String(isExpanded));
 				timelineToggle.textContent = isExpanded ? "Show less" : "View all";
+			}
+
+			if (shouldAnimateTimelineHeight) {
+				clearTimeout(timelineHeightTimeout);
+				timelineList.style.height = `${startHeight}px`;
+				timelineList.style.clipPath = "inset(0 -0.75rem 0 -0.75rem)";
+				timelineList.style.transition = `height ${timelineDuration}ms ease`;
+			}
+
+			let endHeight = startHeight;
+
+			if (shouldAnimateTimelineHeight && !isExpanded) {
+				endHeight = getCollapsedTimelineHeight();
 			}
 
 			expandedItems.forEach((item) => {
@@ -297,8 +419,24 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
 				window.setTimeout(() => {
 					item.setAttribute("hidden", "");
-				}, 300);
+				}, timelineDuration);
 			});
+
+			if (shouldAnimateTimelineHeight) {
+				if (isExpanded) {
+					endHeight = timelineList.scrollHeight;
+				}
+
+				window.requestAnimationFrame(() => {
+					timelineList.style.height = `${endHeight}px`;
+				});
+
+				timelineHeightTimeout = window.setTimeout(() => {
+					timelineList.style.removeProperty("height");
+					timelineList.style.removeProperty("clip-path");
+					timelineList.style.removeProperty("transition");
+				}, timelineDuration);
+			}
 		};
 
 		scrambleText(nameHeading, nameHeading?.textContent?.trim() ?? "");
