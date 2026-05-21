@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog"))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="Blog | Archer Chua" description="Writing by Archer Chua.">
+	<section class="space-y-10">
+		<div class="space-y-3">
+			<p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">
+				Blog
+			</p>
+			<h1 class="font-heading text-4xl font-bold tracking-tight text-neutral-950 dark:text-white">
+				Writing
+			</h1>
+			<p class="max-w-xl text-neutral-600 dark:text-neutral-300">
+				MDX posts live in <code
+					class="rounded bg-neutral-200 px-1.5 py-0.5 text-sm dark:bg-neutral-900"
+					>src/content/blog</code
+				>.
+			</p>
+		</div>
+
+		<ul class="space-y-5">
+			{
+				posts.map((post) => (
+					<li class="rounded-2xl border border-neutral-200 bg-white/70 p-5 transition hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900/30 dark:hover:border-neutral-700">
+						<a href={`/blog/${post.id}`} class="block space-y-2">
+							<div class="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
+								<time datetime={post.data.pubDate.toISOString()}>
+									{post.data.pubDate.toLocaleDateString("en", {
+										month: "long",
+										day: "numeric",
+										year: "numeric",
+									})}
+								</time>
+								{post.data.tags.map((tag) => (
+									<span>#{tag}</span>
+								))}
+							</div>
+							<h2 class="font-heading text-2xl font-semibold text-neutral-950 dark:text-white">
+								{post.data.title}
+							</h2>
+							<p class="text-neutral-600 dark:text-neutral-300">
+								{post.data.description}
+							</p>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</BaseLayout>
