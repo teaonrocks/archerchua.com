@@ -22,13 +22,27 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 			</p>
 		</div>
 
-		<div class="space-y-4">
-			<h2
-				class="font-heading text-2xl font-bold tracking-tight text-neutral-950 dark:text-white"
-			>
-				Currently
-			</h2>
+		<div class="space-y-4" data-timeline-section>
+			<div class="flex max-w-2xl items-center justify-between gap-4">
+				<h2
+					class="font-heading text-2xl font-bold tracking-tight text-neutral-950 dark:text-white"
+					data-timeline-heading
+				>
+					Currently
+				</h2>
+				<button
+					type="button"
+					class="rounded-full px-3 py-1 text-sm font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+					aria-controls="timeline-list"
+					aria-expanded="false"
+					hidden
+					data-timeline-toggle
+				>
+					View all
+				</button>
+			</div>
 			<ul
+				id="timeline-list"
 				class="relative max-w-2xl space-y-5 before:absolute before:bottom-2 before:left-0 before:top-2 before:w-px before:-translate-x-1/2 before:bg-neutral-200 dark:before:bg-neutral-800"
 			>
 				<li class="relative pl-5">
@@ -77,25 +91,150 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 						</p>
 					</div>
 				</li>
+				<li
+					class="relative pl-5 transition duration-300 ease-out"
+					hidden
+					data-expanded-only
+				>
+					<span
+						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
+					></span>
+					<div
+						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+					>
+						<div>
+							<h3
+								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+							>
+								Digital Content Developer Intern
+							</h3>
+							<p class="text-neutral-600 dark:text-neutral-300">Singrow</p>
+						</div>
+						<p
+							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+						>
+							Apr 2023 - Aug 2023
+						</p>
+					</div>
+				</li>
+				<li
+					class="relative pl-5 transition duration-300 ease-out"
+					hidden
+					data-expanded-only
+				>
+					<span
+						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
+					></span>
+					<div
+						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+					>
+						<div>
+							<h3
+								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+							>
+								Higher Nitec in IT Applications Development
+							</h3>
+							<p class="text-neutral-600 dark:text-neutral-300">
+								Institute of Technical Education
+							</p>
+						</div>
+						<p
+							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+						>
+							Apr 2022 - May 2024
+						</p>
+					</div>
+				</li>
+				<li
+					class="relative pl-5 transition duration-300 ease-out"
+					hidden
+					data-expanded-only
+				>
+					<span
+						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
+					></span>
+					<div
+						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+					>
+						<div>
+							<h3
+								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+							>
+								Desktop Support Engineer Intern
+							</h3>
+							<p class="text-neutral-600 dark:text-neutral-300">NCS Group</p>
+						</div>
+						<p
+							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+						>
+							Jan 2021 - Jul 2021
+						</p>
+					</div>
+				</li>
+				<li
+					class="relative pl-5 transition duration-300 ease-out"
+					hidden
+					data-expanded-only
+				>
+					<span
+						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
+					></span>
+					<div
+						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+					>
+						<div>
+							<h3
+								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+							>
+								Nitec in Infocomm Technology
+							</h3>
+							<p class="text-neutral-600 dark:text-neutral-300">
+								Institute of Technical Education
+							</p>
+						</div>
+						<p
+							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+						>
+							Jan 2020 - Feb 2022
+						</p>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</section>
 
 	<script is:inline>
 		const nameHeading = document.querySelector("[data-scramble-name]");
-		const finalName = nameHeading?.textContent?.trim() ?? "";
+		const timelineSection = document.querySelector("[data-timeline-section]");
+		const timelineHeading = timelineSection?.querySelector(
+			"[data-timeline-heading]",
+		);
+		const timelineToggle = timelineSection?.querySelector(
+			"[data-timeline-toggle]",
+		);
+		const expandedItems =
+			timelineSection?.querySelectorAll("[data-expanded-only]") ?? [];
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)",
 		).matches;
+		const characters = "AEFHJKMNRSTVWXYacefhmnrstvwxy137?!/\\|";
+		const frameDuration = 24;
+		const revealSpeed = 0.56;
 
-		if (nameHeading && finalName && !prefersReducedMotion) {
-			const characters = "AEFHJKMNRSTVWXYacefhmnrstvwxy137?!/\\|";
-			const frameDuration = 36;
-			const revealSpeed = 0.36;
+		const scrambleText = (element, finalText) => {
+			if (!element || !finalText) {
+				return;
+			}
+
+			if (prefersReducedMotion) {
+				element.textContent = finalText;
+				return;
+			}
+
 			let frame = 0;
 
 			const scramble = () => {
-				const nextText = finalName
+				const nextText = finalText
 					.split("")
 					.map((character, index) => {
 						if (character === " " || index < frame * revealSpeed) {
@@ -106,17 +245,73 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 					})
 					.join("");
 
-				nameHeading.textContent = nextText;
+				element.textContent = nextText;
 
-				if (frame * revealSpeed < finalName.length) {
+				if (frame * revealSpeed < finalText.length) {
 					frame += 1;
 					window.setTimeout(scramble, frameDuration);
 				} else {
-					nameHeading.textContent = finalName;
+					element.textContent = finalText;
 				}
 			};
 
 			scramble();
+		};
+
+		const setExpanded = (isExpanded, shouldAnimateHeading = true) => {
+			if (timelineHeading) {
+				const headingText = isExpanded ? "Work and Education" : "Currently";
+
+				if (shouldAnimateHeading) {
+					scrambleText(timelineHeading, headingText);
+				} else {
+					timelineHeading.textContent = headingText;
+				}
+			}
+
+			if (timelineToggle) {
+				timelineToggle.setAttribute("aria-expanded", String(isExpanded));
+				timelineToggle.textContent = isExpanded ? "Show less" : "View all";
+			}
+
+			expandedItems.forEach((item) => {
+				if (isExpanded) {
+					item.removeAttribute("hidden");
+					item.classList.add("opacity-0", "-translate-y-1");
+					item.classList.remove("opacity-100", "translate-y-0");
+
+					window.requestAnimationFrame(() => {
+						item.classList.remove("opacity-0", "-translate-y-1");
+						item.classList.add("opacity-100", "translate-y-0");
+					});
+					return;
+				}
+
+				item.classList.add("opacity-0", "-translate-y-1");
+				item.classList.remove("opacity-100", "translate-y-0");
+
+				if (prefersReducedMotion) {
+					item.setAttribute("hidden", "");
+					return;
+				}
+
+				window.setTimeout(() => {
+					item.setAttribute("hidden", "");
+				}, 300);
+			});
+		};
+
+		scrambleText(nameHeading, nameHeading?.textContent?.trim() ?? "");
+
+		if (timelineToggle && expandedItems.length > 0) {
+			timelineToggle.hidden = false;
+			setExpanded(false, false);
+			timelineToggle.addEventListener("click", () => {
+				const isExpanded =
+					timelineToggle.getAttribute("aria-expanded") === "true";
+
+				setExpanded(!isExpanded);
+			});
 		}
 	</script>
 </BaseLayout>
