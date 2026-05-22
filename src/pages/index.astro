@@ -2,6 +2,81 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { ChevronRight } from "@lucide/astro";
 
+const timelineItems = [
+	{
+		title: "Mobile Applications Engineer Intern",
+		organization: "OCBC Bank",
+		period: "Mar 2026 - Mar 2027",
+		isExpandedOnly: false,
+		details: [
+			"Building and maintaining mobile banking application features.",
+			"Collaborating with engineers on production-facing mobile workflows.",
+		],
+	},
+	{
+		title: "Diploma in Digital Design and Development",
+		organization: "Republic Polytechnic",
+		period: "Apr 2024 - Apr 2027",
+		isExpandedOnly: false,
+		details: [
+			"Focused on design thinking, technical skills, user experience, games and gamification, and visual communication.",
+			"Director's Roll of Honour AY2024 Semester 1 & 2.",
+			"Director's Roll of Honour AY2025 Semester 1.",
+			'Participated in SCDF-Dell Hackathon "Lifesavers" Innovation Challenge 2025.',
+			"Participated in DSTA Brainhack CODE_EXP 2025.",
+			"Participated in Mission X by Youth Corps Singapore.",
+			"Participated in University of Glasgow Hackathon 2025.",
+			"Participated in OCBC Ignite Innovation Challenge 2025.",
+		],
+	},
+	{
+		title: "Digital Content Developer Intern",
+		organization: "Singrow",
+		period: "Apr 2023 - Aug 2023",
+		isExpandedOnly: true,
+		details: [
+			"Designed and developed the company website.",
+			"Kept website content updated.",
+			"Developed internal tools using ERPNext.",
+			"Technologies: Next.js, React, ERPNext, Wix.",
+		],
+	},
+	{
+		title: "Higher Nitec in IT Applications Development",
+		organization: "Institute of Technical Education",
+		period: "Apr 2022 - May 2024",
+		isExpandedOnly: true,
+		details: [
+			"Focused on designing, developing, and supporting e-business and smart device applications.",
+			"President cum Captain of ITE Central Pool.",
+			"Represented ITE Central Pool at multiple inter-school competitions.",
+		],
+	},
+	{
+		title: "Desktop Support Engineer Intern",
+		organization: "NCS Group",
+		period: "Jan 2021 - Jul 2021",
+		isExpandedOnly: true,
+		details: [
+			"Handled in-processing and out-processing of IT equipment.",
+			"Troubleshot hardware and software issues.",
+			"Performed tech refresh work for hundreds of company laptops.",
+			"Technologies: Microsoft Excel.",
+		],
+	},
+	{
+		title: "Nitec in Infocomm Technology",
+		organization: "Institute of Technical Education",
+		period: "Jan 2020 - Feb 2022",
+		isExpandedOnly: true,
+		details: [
+			"Focused on deploying, maintaining, and troubleshooting computing devices, networks, servers, and applications in hybrid infrastructure environments.",
+			"Joint ITE-Oracle Certificate in Essentials of Java Programming.",
+			"Member of ITE Central Pool.",
+		],
+	},
+];
+
 const projects = [
 	{
 		name: "One Day at a Time",
@@ -70,160 +145,43 @@ const projects = [
 				id="timeline-list"
 				class="relative max-w-2xl space-y-5 before:absolute before:bottom-2 before:left-0 before:top-2 before:w-px before:-translate-x-1/2 before:bg-neutral-200 dark:before:bg-neutral-800"
 			>
-				<li class="relative pl-5">
-					<span
-						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
-					></span>
-					<div
-						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-					>
-						<div>
-							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
-							>
-								Mobile Applications Engineer Intern
-							</h3>
-							<p class="text-neutral-600 dark:text-neutral-300">OCBC Bank</p>
-						</div>
-						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+				{
+					timelineItems.map((item) => (
+						<li
+							class="relative pl-5 transition duration-300 ease-out"
+							hidden={item.isExpandedOnly}
+							data-expanded-only={item.isExpandedOnly ? true : undefined}
 						>
-							Mar 2026 - Mar 2027
-						</p>
-					</div>
-				</li>
-				<li class="relative pl-5">
-					<span
-						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
-					></span>
-					<div
-						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-					>
-						<div>
-							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
-							>
-								Diploma in Digital Design and Development
-							</h3>
-							<p class="text-neutral-600 dark:text-neutral-300">
-								Republic Polytechnic
-							</p>
-						</div>
-						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
-						>
-							Apr 2024 - Apr 2027
-						</p>
-					</div>
-				</li>
-				<li
-					class="relative pl-5 transition duration-300 ease-out"
-					hidden
-					data-expanded-only
-				>
-					<span
-						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
-					></span>
-					<div
-						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-					>
-						<div>
-							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
-							>
-								Digital Content Developer Intern
-							</h3>
-							<p class="text-neutral-600 dark:text-neutral-300">Singrow</p>
-						</div>
-						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
-						>
-							Apr 2023 - Aug 2023
-						</p>
-					</div>
-				</li>
-				<li
-					class="relative pl-5 transition duration-300 ease-out"
-					hidden
-					data-expanded-only
-				>
-					<span
-						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
-					></span>
-					<div
-						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-					>
-						<div>
-							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
-							>
-								Higher Nitec in IT Applications Development
-							</h3>
-							<p class="text-neutral-600 dark:text-neutral-300">
-								Institute of Technical Education
-							</p>
-						</div>
-						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
-						>
-							Apr 2022 - May 2024
-						</p>
-					</div>
-				</li>
-				<li
-					class="relative pl-5 transition duration-300 ease-out"
-					hidden
-					data-expanded-only
-				>
-					<span
-						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
-					></span>
-					<div
-						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-					>
-						<div>
-							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
-							>
-								Desktop Support Engineer Intern
-							</h3>
-							<p class="text-neutral-600 dark:text-neutral-300">NCS Group</p>
-						</div>
-						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
-						>
-							Jan 2021 - Jul 2021
-						</p>
-					</div>
-				</li>
-				<li
-					class="relative pl-5 transition duration-300 ease-out"
-					hidden
-					data-expanded-only
-				>
-					<span
-						class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500"
-					></span>
-					<div
-						class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
-					>
-						<div>
-							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
-							>
-								Nitec in Infocomm Technology
-							</h3>
-							<p class="text-neutral-600 dark:text-neutral-300">
-								Institute of Technical Education
-							</p>
-						</div>
-						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
-						>
-							Jan 2020 - Feb 2022
-						</p>
-					</div>
-				</li>
+							<span class="absolute left-0 top-2 size-2 -translate-x-1/2 rounded-full bg-neutral-400 dark:bg-neutral-500" />
+							<details class="group" data-timeline-entry>
+								<summary class="flex cursor-pointer list-none flex-col gap-1 rounded-xl -m-2 p-2 transition duration-200 hover:bg-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:flex-row sm:items-start sm:justify-between sm:gap-4 dark:hover:bg-neutral-900 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950 [&::-webkit-details-marker]:hidden">
+									<div>
+										<h3 class="font-heading text-xl font-semibold text-neutral-950 dark:text-white">
+											{item.title}
+											<ChevronRight
+												aria-hidden="true"
+												class="ml-1 inline-block size-5 align-[-0.175em] text-neutral-400 transition duration-200 group-open:rotate-90 group-open:text-neutral-600 dark:text-neutral-500 dark:group-open:text-neutral-300"
+											/>
+										</h3>
+										<p class="text-neutral-600 dark:text-neutral-300">
+											{item.organization}
+										</p>
+									</div>
+									<p class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+										{item.period}
+									</p>
+								</summary>
+								<div class="overflow-hidden" data-timeline-detail>
+									<ul class="mt-4 list-disc space-y-2 border-l border-neutral-200 pl-8 leading-7 text-neutral-600 marker:text-neutral-400 dark:border-neutral-800 dark:text-neutral-300 dark:marker:text-neutral-500">
+										{item.details.map((detail) => (
+											<li>{detail}</li>
+										))}
+									</ul>
+								</div>
+							</details>
+						</li>
+					))
+				}
 			</ul>
 		</div>
 
@@ -290,6 +248,7 @@ const projects = [
 		const frameDuration = 24;
 		const revealSpeed = 0.56;
 		const timelineDuration = 300;
+		const detailDuration = 260;
 		let timelineHeightTimeout;
 		const scrambleRuns = new WeakMap();
 
@@ -353,6 +312,62 @@ const projects = [
 
 				scramble();
 			});
+		};
+
+		const animateTimelineDetail = (details, shouldOpen) => {
+			const detail = details.querySelector("[data-timeline-detail]");
+
+			if (!detail) {
+				details.open = shouldOpen;
+				return;
+			}
+
+			if (prefersReducedMotion) {
+				details.open = shouldOpen;
+				return;
+			}
+
+			const finishAnimation = () => {
+				detail.style.removeProperty("height");
+				detail.style.removeProperty("opacity");
+				detail.style.removeProperty("transform");
+				detail.style.removeProperty("transition");
+				detail.style.removeProperty("will-change");
+				details.removeAttribute("data-animating");
+
+				if (!shouldOpen) {
+					details.open = false;
+				}
+			};
+
+			clearTimeout(Number(details.dataset.animationTimeout));
+			details.setAttribute("data-animating", "true");
+
+			if (shouldOpen) {
+				details.open = true;
+				detail.style.height = "0px";
+				detail.style.opacity = "0";
+				detail.style.transform = "translateY(-0.25rem)";
+			} else {
+				detail.style.height = `${detail.offsetHeight}px`;
+				detail.style.opacity = "1";
+				detail.style.transform = "translateY(0)";
+			}
+
+			detail.style.willChange = "height, opacity, transform";
+
+			window.requestAnimationFrame(() => {
+				detail.style.transition = `height ${detailDuration}ms ease, opacity ${detailDuration}ms ease, transform ${detailDuration}ms ease`;
+				detail.style.height = shouldOpen ? `${detail.scrollHeight}px` : "0px";
+				detail.style.opacity = shouldOpen ? "1" : "0";
+				detail.style.transform = shouldOpen
+					? "translateY(0)"
+					: "translateY(-0.25rem)";
+			});
+
+			details.dataset.animationTimeout = String(
+				window.setTimeout(finishAnimation, detailDuration),
+			);
 		};
 
 		const setExpanded = (isExpanded, shouldAnimateHeading = true) => {
@@ -440,6 +455,17 @@ const projects = [
 		};
 
 		scrambleText(nameHeading, nameHeading?.textContent?.trim() ?? "");
+
+		timelineSection
+			?.querySelectorAll("[data-timeline-entry]")
+			.forEach((details) => {
+				const summary = details.querySelector("summary");
+
+				summary?.addEventListener("click", (event) => {
+					event.preventDefault();
+					animateTimelineDetail(details, !details.open);
+				});
+			});
 
 		if (timelineToggle && expandedItems.length > 0) {
 			timelineToggle.hidden = false;
