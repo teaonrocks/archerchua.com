@@ -8,28 +8,28 @@ const posts = (await getCollection("blog"))
 ---
 
 <BaseLayout title="Blog | Archer Chua" description="Writing by Archer Chua.">
-	<section class="space-y-10">
-		<div class="space-y-3">
-			<p class="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500">
+	<section class="space-y-12">
+		<div class="space-y-4">
+			<p class="type-eyebrow">
 				Blog
 			</p>
-			<h1 class="font-heading text-4xl font-bold tracking-tight text-neutral-950 dark:text-white">
+			<h1 class="type-page-title">
 				Writing
 			</h1>
-			<p class="max-w-xl text-neutral-600 dark:text-neutral-300">
-				MDX posts live in <code
-					class="rounded bg-neutral-200 px-1.5 py-0.5 text-sm dark:bg-neutral-900"
-					>src/content/blog</code
-				>.
+			<p class="type-lede">
+				Notes on projects, product decisions, and the small details that make software feel considered.
 			</p>
 		</div>
 
-		<ul class="space-y-5">
+		<ul class="divide-y divide-neutral-200 dark:divide-neutral-800">
 			{
 				posts.map((post) => (
-					<li class="rounded-2xl border border-neutral-200 bg-white/70 p-5 transition hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900/30 dark:hover:border-neutral-700">
-						<a href={`/blog/${post.id}`} class="block space-y-2">
-							<div class="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
+					<li>
+						<a
+							href={`/blog/${post.id}`}
+							class="group block py-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						>
+							<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400">
 								<time datetime={post.data.pubDate.toISOString()}>
 									{post.data.pubDate.toLocaleDateString("en", {
 										month: "long",
@@ -41,10 +41,10 @@ const posts = (await getCollection("blog"))
 									<span>#{tag}</span>
 								))}
 							</div>
-							<h2 class="font-heading text-2xl font-semibold text-neutral-950 dark:text-white">
+							<h2 class="type-item-title mt-2 underline decoration-transparent underline-offset-8 transition group-hover:text-neutral-700 group-hover:decoration-neutral-400 dark:group-hover:text-neutral-200 dark:group-hover:decoration-neutral-600">
 								{post.data.title}
 							</h2>
-							<p class="text-neutral-600 dark:text-neutral-300">
+							<p class="type-copy mt-2 transition group-hover:text-neutral-800 dark:group-hover:text-neutral-200">
 								{post.data.description}
 							</p>
 						</a>

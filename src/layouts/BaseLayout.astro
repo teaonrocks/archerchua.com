@@ -17,7 +17,7 @@ const {
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,37 +45,33 @@ const {
 		</script>
 	</head>
 	<body>
-		<div class="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-6 py-8">
-			<header class="flex items-center justify-between gap-6">
+		<div class="site-shell">
+			<header class="site-header">
 				<div class="flex flex-wrap items-center justify-start gap-4">
-					<nav
-						class="flex gap-4 text-sm text-neutral-500 dark:text-neutral-400"
-					>
+					<nav class="site-nav" aria-label="Primary">
 						<a
-							class="transition hover:text-neutral-950 dark:hover:text-white"
+							class="site-nav-link"
 							href="/"
 						>
 							Home
 						</a>
 						<a
-							class="transition hover:text-neutral-950 dark:hover:text-white"
+							class="site-nav-link"
 							href="/blog"
 						>
 							Blog
 						</a>
 					</nav>
 				</div>
-				<div class="flex items-center gap-4">
-					<p
-						class="font-heading text-right text-sm font-medium text-neutral-700 dark:text-neutral-300"
-					>
+				<div class="flex items-start gap-3 sm:items-center sm:gap-4">
+					<p class="site-role">
 						Mobile Applications Engineer @ OCBC
 					</p>
 					<ThemeToggle />
 				</div>
 			</header>
 
-			<main class="flex-1 py-16">
+			<main class="site-main">
 				<slot />
 			</main>
 		</div>

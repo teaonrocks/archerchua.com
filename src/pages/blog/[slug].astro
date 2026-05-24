@@ -16,16 +16,10 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={`${post.data.title} | Archer Chua`} description={post.data.description}>
-	<article class="space-y-10">
-		<header class="space-y-4">
-			<a
-				href="/blog"
-				class="text-sm text-neutral-500 transition hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white"
-			>
-				Back to blog
-			</a>
-			<div class="space-y-3">
-				<time class="text-sm text-neutral-500" datetime={post.data.pubDate.toISOString()}>
+	<article class="space-y-12">
+		<header class="space-y-5">
+			<div class="max-w-[44rem] space-y-4">
+				<time class="type-muted block" datetime={post.data.pubDate.toISOString()}>
 					{
 						post.data.pubDate.toLocaleDateString("en", {
 							month: "long",
@@ -35,19 +29,17 @@ const { Content } = await render(post);
 					}
 				</time>
 				<h1
-					class="font-heading text-4xl font-bold tracking-tight text-neutral-950 sm:text-5xl dark:text-white"
+					class="type-page-title"
 				>
 					{post.data.title}
 				</h1>
-				<p class="text-lg leading-8 text-neutral-600 dark:text-neutral-300">
+				<p class="type-lede">
 					{post.data.description}
 				</p>
 			</div>
 		</header>
 
-		<div
-			class="space-y-6 leading-8 text-neutral-700 dark:text-neutral-300 [&_a]:text-neutral-950 [&_a]:underline dark:[&_a]:text-white [&_blockquote]:border-l [&_blockquote]:border-neutral-300 [&_blockquote]:pl-4 dark:[&_blockquote]:border-neutral-700 [&_code]:rounded [&_code]:bg-neutral-200 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-neutral-950 dark:[&_code]:bg-neutral-900 dark:[&_code]:text-neutral-100 [&_h2]:pt-6 [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-neutral-950 dark:[&_h2]:text-white [&_li]:ml-6 [&_li]:list-disc [&_pre]:overflow-x-auto [&_pre]:rounded-2xl [&_pre]:border [&_pre]:border-neutral-200 [&_pre]:bg-white [&_pre]:p-4 dark:[&_pre]:border-neutral-800 dark:[&_pre]:bg-neutral-900"
-		>
+		<div class="prose-article">
 			<Content />
 		</div>
 	</article>

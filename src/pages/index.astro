@@ -25,18 +25,16 @@ const projects = [
 ---
 
 <BaseLayout>
-	<section class="space-y-12">
-		<div class="space-y-4">
+	<section class="space-y-14 sm:space-y-16">
+		<div class="space-y-5">
 			<h1
 				aria-label="Archer Chua"
-				class="font-heading max-w-2xl text-4xl font-bold tracking-tight text-neutral-950 sm:text-7xl dark:text-white"
+				class="type-display max-w-2xl"
 				data-scramble-name
 			>
 				Archer Chua
 			</h1>
-			<p
-				class="font-body max-w-xl text-lg leading-8 text-neutral-600 dark:text-neutral-300"
-			>
+			<p class="type-lede">
 				I'm an aspiring software engineer passionate about technology and
 				building software that solves real world problems. When I'm not
 				commanding my army of AI agents, I'm probably nerding out about audio
@@ -44,20 +42,17 @@ const projects = [
 			</p>
 		</div>
 
-		<div
-			class="space-y-4 border-t border-neutral-200 pt-10 dark:border-neutral-800"
-			data-timeline-section
-		>
+		<div class="section-block space-y-5" data-timeline-section>
 			<div class="flex max-w-2xl items-center justify-between gap-4">
 				<h2
-					class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white"
+					class="type-section"
 					data-timeline-heading
 				>
 					Currently
 				</h2>
 				<button
 					type="button"
-					class="cursor-pointer rounded-full px-3 py-1 text-sm font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+					class="text-action cursor-pointer bg-transparent text-sm"
 					aria-controls="timeline-list"
 					aria-expanded="false"
 					hidden
@@ -68,7 +63,7 @@ const projects = [
 			</div>
 			<ul
 				id="timeline-list"
-				class="relative max-w-2xl space-y-5 before:absolute before:bottom-2 before:left-0 before:top-2 before:w-px before:-translate-x-1/2 before:bg-neutral-200 dark:before:bg-neutral-800"
+				class="relative max-w-2xl space-y-6 before:absolute before:bottom-2 before:left-0 before:top-2 before:w-px before:-translate-x-1/2 before:bg-neutral-200 dark:before:bg-neutral-800"
 			>
 				<li class="relative pl-5">
 					<span
@@ -79,20 +74,20 @@ const projects = [
 					>
 						<div>
 							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+								class="type-item-title"
 							>
 								Mobile Applications Engineer Intern
 							</h3>
 							<p class="text-neutral-600 dark:text-neutral-300">OCBC Bank</p>
 							<p
-								class="mt-2 max-w-xl text-sm leading-6 text-neutral-500 dark:text-neutral-400"
+								class="type-muted mt-2 max-w-xl"
 							>
 								Supporting mobile banking engineering while learning production
 								app workflows in an enterprise financial services environment.
 							</p>
 						</div>
 						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+							class="shrink-0 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400"
 						>
 							Mar 2026 - Mar 2027
 						</p>
@@ -107,7 +102,7 @@ const projects = [
 					>
 						<div>
 							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+								class="type-item-title"
 							>
 								Diploma in Digital Design and Development
 							</h3>
@@ -115,14 +110,14 @@ const projects = [
 								Republic Polytechnic
 							</p>
 							<p
-								class="mt-2 max-w-xl text-sm leading-6 text-neutral-500 dark:text-neutral-400"
+								class="type-muted mt-2 max-w-xl"
 							>
 								Studying design thinking and technical development across user
 								experience, games, and visual communication.
 							</p>
 						</div>
 						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+							class="shrink-0 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400"
 						>
 							Apr 2024 - Apr 2027
 						</p>
@@ -141,20 +136,20 @@ const projects = [
 					>
 						<div>
 							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+								class="type-item-title"
 							>
 								Digital Content Developer Intern
 							</h3>
 							<p class="text-neutral-600 dark:text-neutral-300">Singrow</p>
 							<p
-								class="mt-2 max-w-xl text-sm leading-6 text-neutral-500 dark:text-neutral-400"
+								class="type-muted mt-2 max-w-xl"
 							>
 								Developed and maintained the company website and internal tools
 								to improve digital presence and operational efficiency.
 							</p>
 						</div>
 						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+							class="shrink-0 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400"
 						>
 							Apr 2023 - Aug 2023
 						</p>
@@ -173,7 +168,7 @@ const projects = [
 					>
 						<div>
 							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+								class="type-item-title"
 							>
 								Higher Nitec in IT Applications Development
 							</h3>
@@ -181,14 +176,14 @@ const projects = [
 								Institute of Technical Education
 							</p>
 							<p
-								class="mt-2 max-w-xl text-sm leading-6 text-neutral-500 dark:text-neutral-400"
+								class="type-muted mt-2 max-w-xl"
 							>
 								Focused on designing, developing, and supporting e-business and
 								smart device applications.
 							</p>
 						</div>
 						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+							class="shrink-0 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400"
 						>
 							Apr 2022 - May 2024
 						</p>
@@ -207,20 +202,20 @@ const projects = [
 					>
 						<div>
 							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+								class="type-item-title"
 							>
 								Desktop Support Engineer Intern
 							</h3>
 							<p class="text-neutral-600 dark:text-neutral-300">NCS Group</p>
 							<p
-								class="mt-2 max-w-xl text-sm leading-6 text-neutral-500 dark:text-neutral-400"
+								class="type-muted mt-2 max-w-xl"
 							>
 								Provided IT support and device maintenance for corporate client
 								environments.
 							</p>
 						</div>
 						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+							class="shrink-0 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400"
 						>
 							Jan 2021 - Jul 2021
 						</p>
@@ -239,7 +234,7 @@ const projects = [
 					>
 						<div>
 							<h3
-								class="font-heading text-xl font-semibold text-neutral-950 dark:text-white"
+								class="type-item-title"
 							>
 								Nitec in Infocomm Technology
 							</h3>
@@ -247,14 +242,14 @@ const projects = [
 								Institute of Technical Education
 							</p>
 							<p
-								class="mt-2 max-w-xl text-sm leading-6 text-neutral-500 dark:text-neutral-400"
+								class="type-muted mt-2 max-w-xl"
 							>
 								Focused on deploying, maintaining, and troubleshooting computing
 								devices, networks, servers, and applications.
 							</p>
 						</div>
 						<p
-							class="shrink-0 text-sm font-medium text-neutral-500 dark:text-neutral-400"
+							class="shrink-0 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400"
 						>
 							Jan 2020 - Feb 2022
 						</p>
@@ -263,32 +258,30 @@ const projects = [
 			</ul>
 		</div>
 
-		<div
-			class="space-y-4 border-t border-neutral-200 pt-10 dark:border-neutral-800"
-		>
+		<div class="section-block space-y-5">
 			<div class="flex max-w-2xl items-center justify-between gap-4">
 				<h2
-					class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white"
+					class="type-section"
 				>
 					Projects
 				</h2>
 			</div>
-			<ul class="max-w-2xl space-y-5">
+			<ul class="max-w-2xl divide-y divide-neutral-200 dark:divide-neutral-800">
 				{
 					projects.map((project) => (
 						<li>
 							<a
-								class="group block transition hover:translate-x-1"
+								class="group block py-5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
 								href={project.href}
 							>
-								<h3 class="font-heading text-xl font-semibold text-neutral-950 transition group-hover:text-neutral-600 dark:text-white dark:group-hover:text-neutral-300">
+								<h3 class="type-item-title underline decoration-transparent underline-offset-8 transition group-hover:text-neutral-700 group-hover:decoration-neutral-400 dark:group-hover:text-neutral-200 dark:group-hover:decoration-neutral-600">
 									{project.name}
 									<ChevronRight
 										aria-hidden="true"
 										class="ml-1 inline-block size-5 align-[-0.175em] text-neutral-400 transition group-hover:translate-x-1 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300"
 									/>
 								</h3>
-								<p class="mt-2 leading-7 text-neutral-600 transition group-hover:text-neutral-800 dark:text-neutral-300 dark:group-hover:text-neutral-200">
+								<p class="type-copy mt-2 transition group-hover:text-neutral-800 dark:group-hover:text-neutral-200">
 									{project.description}
 								</p>
 							</a>
@@ -298,20 +291,18 @@ const projects = [
 			</ul>
 		</div>
 
-		<div
-			class="space-y-4 border-t border-neutral-200 pt-10 dark:border-neutral-800"
-		>
+		<div class="section-block space-y-4">
 			<h2
-				class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white"
+				class="type-section"
 			>
 				Links
 			</h2>
 			<ul
-				class="flex max-w-2xl flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-neutral-600 dark:text-neutral-300"
+				class="flex max-w-2xl flex-wrap gap-x-5 gap-y-1 text-sm font-medium text-neutral-600 dark:text-neutral-300"
 			>
 				<li>
 					<a
-						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						class="text-action"
 						href="https://x.com/teaonrocks"
 						target="_blank"
 						rel="noreferrer"
@@ -321,7 +312,7 @@ const projects = [
 				</li>
 				<li>
 					<a
-						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						class="text-action"
 						href="https://github.com/teaonrocks"
 						target="_blank"
 						rel="noreferrer"
@@ -331,7 +322,7 @@ const projects = [
 				</li>
 				<li>
 					<a
-						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						class="text-action"
 						href="https://linkedin.com/in/archerchua"
 						target="_blank"
 						rel="noreferrer"
@@ -342,7 +333,7 @@ const projects = [
 				<li>
 					<button
 						type="button"
-						class="cursor-pointer bg-transparent p-0 font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						class="text-action cursor-pointer bg-transparent"
 						data-copy-email="arxherchua@gmail.com"
 					>
 						Email
@@ -350,7 +341,7 @@ const projects = [
 				</li>
 				<li>
 					<a
-						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						class="text-action"
 						href="/resume.pdf"
 						download="Archer-Chua-Resume.pdf"
 						data-resume-download
@@ -363,7 +354,7 @@ const projects = [
 	</section>
 
 	<div
-		class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-800 opacity-0 shadow-lg shadow-neutral-200/60 transition duration-200 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:shadow-black/20"
+		class="pointer-events-none fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 z-50 -translate-x-1/2 translate-y-2 border-y border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-800 opacity-0 shadow-lg shadow-neutral-200/60 transition duration-200 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:shadow-black/20"
 		role="status"
 		aria-live="polite"
 		hidden
