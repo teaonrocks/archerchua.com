@@ -297,7 +297,80 @@ const projects = [
 				}
 			</ul>
 		</div>
+
+		<div
+			class="space-y-4 border-t border-neutral-200 pt-10 dark:border-neutral-800"
+		>
+			<h2
+				class="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white"
+			>
+				Links
+			</h2>
+			<ul
+				class="flex max-w-2xl flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-neutral-600 dark:text-neutral-300"
+			>
+				<li>
+					<a
+						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						href="https://x.com/teaonrocks"
+						target="_blank"
+						rel="noreferrer"
+					>
+						X
+					</a>
+				</li>
+				<li>
+					<a
+						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						href="https://github.com/teaonrocks"
+						target="_blank"
+						rel="noreferrer"
+					>
+						GitHub
+					</a>
+				</li>
+				<li>
+					<a
+						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						href="https://linkedin.com/in/archerchua"
+						target="_blank"
+						rel="noreferrer"
+					>
+						LinkedIn
+					</a>
+				</li>
+				<li>
+					<button
+						type="button"
+						class="cursor-pointer bg-transparent p-0 font-medium text-neutral-600 transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						data-copy-email="arxherchua@gmail.com"
+					>
+						Email
+					</button>
+				</li>
+				<li>
+					<a
+						class="transition hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+						href="/resume.pdf"
+						download="Archer-Chua-Resume.pdf"
+						data-resume-download
+					>
+						Resume
+					</a>
+				</li>
+			</ul>
+		</div>
 	</section>
+
+	<div
+		class="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-800 opacity-0 shadow-lg shadow-neutral-200/60 transition duration-200 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:shadow-black/20"
+		role="status"
+		aria-live="polite"
+		hidden
+		data-toast
+	>
+		<span data-toast-message></span>
+	</div>
 
 	<script is:inline>
 		const nameHeading = document.querySelector("[data-scramble-name]");
@@ -319,7 +392,54 @@ const projects = [
 		const revealSpeed = 0.56;
 		const timelineDuration = 300;
 		let timelineHeightTimeout;
+		let toastTimeout;
+		let toastHideTimeout;
 		const scrambleRuns = new WeakMap();
+
+		const toast = document.querySelector("[data-toast]");
+		const toastMessage = toast?.querySelector("[data-toast-message]");
+
+		const showToast = (message) => {
+			if (!toast || !toastMessage) {
+				return;
+			}
+
+			window.clearTimeout(toastTimeout);
+			window.clearTimeout(toastHideTimeout);
+			toastMessage.textContent = message;
+			toast.hidden = false;
+
+			window.requestAnimationFrame(() => {
+				toast.classList.remove("translate-y-2", "opacity-0");
+				toast.classList.add("translate-y-0", "opacity-100");
+			});
+
+			toastTimeout = window.setTimeout(() => {
+				toast.classList.add("translate-y-2", "opacity-0");
+				toast.classList.remove("translate-y-0", "opacity-100");
+
+				toastHideTimeout = window.setTimeout(() => {
+					toast.hidden = true;
+				}, 200);
+			}, 2200);
+		};
+
+		const copyToClipboard = async (value) => {
+			if (navigator.clipboard?.writeText) {
+				await navigator.clipboard.writeText(value);
+				return;
+			}
+
+			const textarea = document.createElement("textarea");
+			textarea.value = value;
+			textarea.setAttribute("readonly", "");
+			textarea.style.position = "fixed";
+			textarea.style.opacity = "0";
+			document.body.append(textarea);
+			textarea.select();
+			document.execCommand("copy");
+			textarea.remove();
+		};
 
 		const getCollapsedTimelineHeight = () => {
 			const visibleItems =
@@ -468,6 +588,29 @@ const projects = [
 		};
 
 		scrambleText(nameHeading, nameHeading?.textContent?.trim() ?? "");
+
+		document.querySelectorAll("[data-copy-email]").forEach((button) => {
+			button.addEventListener("click", async () => {
+				const email = button.getAttribute("data-copy-email");
+
+				if (!email) {
+					return;
+				}
+
+				try {
+					await copyToClipboard(email);
+					showToast("Email copied to clipboard");
+				} catch {
+					showToast("Could not copy email");
+				}
+			});
+		});
+
+		document.querySelectorAll("[data-resume-download]").forEach((link) => {
+			link.addEventListener("click", () => {
+				showToast("Downloading resume");
+			});
+		});
 
 		if (timelineToggle && expandedItems.length > 0) {
 			timelineToggle.hidden = false;
