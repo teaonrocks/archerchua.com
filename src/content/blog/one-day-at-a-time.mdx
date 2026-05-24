@@ -1,0 +1,37 @@
+---
+title: One Day at a Time
+description: Building a real-time poverty simulation app that helped participants experience the weight of daily choices.
+pubDate: 2026-05-21
+tags:
+  - project
+---
+
+## The Activity
+
+ODAT (One Day At a Time) is a project by Youth Corps Singapore. The goal of this activity is for people to step into the shoes of low-income parents and live it for 14 days. Every day, they must make one of two choices that impact how much money they have, their career, their family, or their health. All these choices are logged in an Excel sheet with formulas to display how much money they have left and the status of their career, family, and health.
+
+## The Spark
+
+When I went through this activity during MissionX, I found it immensely impactful. I came from a low-income family that could barely keep the lights on. However, I felt that the experience could be further improved. I came up with an idea to build a Kahoot-style app where participants could join a lobby and everyone could be in sync with the activity in real time.
+
+## Making the Pitch
+
+I gathered my courage and pitched the idea to the person who was running the event. Thankfully, she thought that it was an amazing idea as well. Following this, she linked me up with the original creator of this activity, and we started working on the app. She even offered me an internship.
+
+## Solving for Scale
+
+One key problem that I had to consider was scale. At these events, there could be hundreds if not thousands of concurrent participants, all needing instant synchronization as they clicked through daily choices. Initially, I leaned toward Firebase because of its real-time capabilities, but the pricing model quickly became a blocker. Firebase Firestore charges per document read, and with thousands of participants updating their status simultaneously, the costs would have spiraled quickly, something a non-profit simply couldn't risk.
+
+To solve this, I decided on Convex, a real-time database service that offers a more predictable free tier. Unlike Firebase, which bills per operation and caps concurrent connections on the free plan, Convex allows for unlimited concurrent users and provides real-time sync out of the box. This meant I could handle the "Kahoot-style" lobby experience where hundreds of phones update simultaneously, without worrying about connection limits or a surprise bill. It also meant I could translate the Excel formulas directly into backend functions while keeping everything responsive.
+
+## Bridging the Technical Gap
+
+Working with the original creator meant dealing with his firm attachment to the original Excel format. He had run this activity for years and knew it worked, so he did not want to change his mind about how the experience should translate to an app. I had to explain why certain UX decisions were necessary, like why we should have the choice buttons at the bottom of the screen so that participants could click them easily without stretching their thumbs to the top. After doing some A/B testing to prove my point, we managed to land on the same page.
+
+## Production Run
+
+Eventually, I was able to see the project through to the first production run at one of their smaller events. Watching everyone use my app and experience the activity while being fully immersed made me feel amazing. Though life got in the way of further improving the project, I managed to pass what I had built to a full-time employee of the organisation to take over.
+
+## What I Learned
+
+Through this project, I learnt to communicate with a non-technical person on project specifications and how to build an app that can scale. More importantly, I learnt that the best technical decisions aren't just about the coolest stack. They're about choosing tools that fit the constraints of the people you're building for.

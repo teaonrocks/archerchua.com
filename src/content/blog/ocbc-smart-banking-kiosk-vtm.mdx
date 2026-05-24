@@ -1,0 +1,31 @@
+---
+title: OCBC Smart Banking Kiosk
+description: A local-AI virtual teller prototype that turns voice requests into guided banking flows, with WebRTC escalation when a human agent needs to step in.
+pubDate: 2026-05-21
+tags:
+  - project
+---
+
+## The Spark
+
+When I signed up for the OCBC Ignite Innovation Challenge 2025, I had a simple idea: what if banking could be as natural as talking to a teller, but available 24/7? I pictured a Virtual Teller Machine where customers speak requests to a local AI, and escalate to a human agent with one click when needed.
+
+I knew React and local AI, but I had never touched WebRTC. Learning an entire protocol in a weekend to ship real time video, audio, and screen sharing felt like the right kind of impossible.
+
+## The Build
+
+The OCBC VTM is a smart banking kiosk. Customers speak their request; Whisper transcribes it in the browser, a local LLM classifies the intent, and the UI responds with guided workflows for remittances or loan enquiries. When self service fails, one click escalates to a live agent over WebRTC with screen sharing and real time annotations so they can literally point at the problem.
+
+I chose local AI for privacy (voice data never leaves the machine) and resilience (it works offline). I used a monorepo so I could spin up the entire stack with one command, letting judges see the full flow immediately.
+
+## The Security Nightmare
+
+The biggest challenge was not WebRTC itself; it was making it secure. Everything worked on localhost with HTTP, but the moment we switched to HTTPS for camera access, the system collapsed. My teammate and I spent an entire night debugging why connections would initialise but never establish.
+
+The root cause was a cascade of security requirements I did not understand: HTTPS for the UI, WSS for the signalling server, HTTPS for the dashboard, and valid TLS certificates for all three, even in local development. Discovering mkcert helped, but wiring each service correctly took until 4 AM. When the agent video finally appeared, the relief was immediate. The lesson was enduring: security is foundational, not an afterthought.
+
+## The Result
+
+The prototype proved local AI works for banking and WebRTC adds trust through human escalation. It transformed me from someone who uses AI libraries into someone who deploys AI systems, and from a WebRTC novice into someone who can debug ICE candidates and certificate chains.
+
+Most importantly, it taught me that the hardest part is not the AI; it is making the AI disappear into an interface that knows when to automate and when to connect humans.

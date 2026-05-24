@@ -1,0 +1,94 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ScrambleText from "@/components/ScrambleText.astro";
+import { getReadingTime } from "@/readingTime";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("blog", ({ data }) => !data.draft);
+
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const site = Astro.site ?? new URL("https://archerchua.com");
+const postPath = `/blog/${post.id}`;
+const postUrl = new URL(post.data.canonical ?? postPath, site);
+const postImage = post.data.image ?? "/character-01.png";
+const postImageUrl = new URL(postImage, site).toString();
+const publishedDate = post.data.pubDate.toISOString();
+const modifiedDate = (post.data.updatedDate ?? post.data.pubDate).toISOString();
+const readingTime = getReadingTime(post.body);
+const formattedPublishedDate = post.data.pubDate.toLocaleDateString("en", {
+	month: "long",
+	day: "numeric",
+	year: "numeric",
+});
+const formattedUpdatedDate = post.data.updatedDate?.toLocaleDateString("en", {
+	month: "long",
+	day: "numeric",
+	year: "numeric",
+});
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: post.data.title,
+	description: post.data.description,
+	image: postImageUrl,
+	url: postUrl.toString(),
+	datePublished: publishedDate,
+	dateModified: modifiedDate,
+	timeRequired: readingTime.isoDuration,
+	author: {
+		"@type": "Person",
+		name: "Archer Chua",
+		url: new URL("/", site).toString(),
+	},
+	publisher: {
+		"@type": "Person",
+		name: "Archer Chua",
+	},
+	keywords: post.data.tags,
+};
+---
+
+<BaseLayout
+	title={`${post.data.title} | Archer Chua`}
+	description={post.data.description}
+	canonicalPath={post.data.canonical ?? postPath}
+	ogType="article"
+	image={postImage}
+	jsonLd={jsonLd}
+>
+	<article class="space-y-12">
+		<header class="space-y-5">
+			<div class="max-w-[44rem] space-y-4">
+				<div class="type-muted space-y-1">
+					<p>
+						Published <time datetime={publishedDate}>{formattedPublishedDate}</time>
+					</p>
+					<p>{readingTime.label}</p>
+					{
+						post.data.updatedDate && (
+							<p>
+								Updated <time datetime={post.data.updatedDate.toISOString()}>{formattedUpdatedDate}</time>
+							</p>
+						)
+					}
+				</div>
+				<ScrambleText as="h1" class="type-page-title" text={post.data.title} />
+				<p class="type-lede">
+					{post.data.description}
+				</p>
+			</div>
+		</header>
+
+		<div class="prose-article">
+			<Content />
+		</div>
+	</article>
+</BaseLayout>

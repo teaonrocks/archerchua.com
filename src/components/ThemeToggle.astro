@@ -1,0 +1,44 @@
+---
+import { Moon, Sun } from "@lucide/astro";
+---
+
+<button
+	type="button"
+	data-theme-toggle
+	class="relative inline-flex size-11 items-center justify-center text-neutral-700 transition after:absolute after:left-1/2 after:top-[calc(50%+0.85rem)] after:h-px after:w-4 after:-translate-x-1/2 after:bg-neutral-400 after:opacity-0 after:transition hover:text-neutral-950 hover:after:opacity-100 focus:outline-none focus-visible:after:opacity-100 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:text-neutral-400 dark:after:bg-neutral-700 dark:hover:text-neutral-200 dark:focus-visible:ring-neutral-300 dark:focus-visible:ring-offset-neutral-900"
+	aria-label="Switch theme"
+	aria-pressed="false"
+	title="Switch theme"
+>
+	<Moon class="size-4 dark:hidden" aria-hidden="true" />
+	<Sun class="hidden size-4 dark:block" aria-hidden="true" />
+</button>
+
+<script>
+	function getTheme() {
+		return document.documentElement.classList.contains("dark") ? "dark" : "light";
+	}
+
+	function updateThemeToggleLabel(button: HTMLButtonElement) {
+		const isDark = getTheme() === "dark";
+		const nextTheme = isDark ? "light" : "dark";
+		const label = `Switch to ${nextTheme} mode`;
+
+		button.setAttribute("aria-label", label);
+		button.setAttribute("aria-pressed", String(isDark));
+		button.setAttribute("title", label);
+	}
+
+	document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]").forEach((button) => {
+		updateThemeToggleLabel(button);
+
+		button.addEventListener("click", () => {
+			const nextTheme = getTheme() === "dark" ? "light" : "dark";
+
+			document.documentElement.classList.toggle("dark", nextTheme === "dark");
+			document.documentElement.style.colorScheme = nextTheme;
+			localStorage.setItem("theme", nextTheme);
+			updateThemeToggleLabel(button);
+		});
+	});
+</script>

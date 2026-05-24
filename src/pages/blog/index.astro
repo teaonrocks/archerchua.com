@@ -1,0 +1,82 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ScrambleText from "@/components/ScrambleText.astro";
+import { getReadingTime } from "@/readingTime";
+
+const posts = (await getCollection("blog"))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const postsWithReadingTime = posts.map((post) => ({
+	post,
+	readingTime: getReadingTime(post.body),
+}));
+
+const title = "Blog | Archer Chua";
+const description =
+	"Project notes and writing by Archer Chua on software engineering, product decisions, and building thoughtful web and mobile experiences.";
+const site = Astro.site ?? new URL("https://archerchua.com");
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Blog",
+	name: "Archer Chua Blog",
+	description,
+	url: new URL("/blog", site).toString(),
+	author: {
+		"@type": "Person",
+		name: "Archer Chua",
+		url: new URL("/", site).toString(),
+	},
+	blogPost: postsWithReadingTime.map(({ post, readingTime }) => ({
+		"@type": "BlogPosting",
+		headline: post.data.title,
+		url: new URL(`/blog/${post.id}`, site).toString(),
+		datePublished: post.data.pubDate.toISOString(),
+		timeRequired: readingTime.isoDuration,
+	})),
+};
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/blog" jsonLd={jsonLd}>
+	<section class="space-y-12">
+		<div class="space-y-4">
+			<ScrambleText as="h1" class="type-page-title" text="Writing" />
+			<p class="type-lede">
+				Notes on projects, product decisions, and the small details that make software feel considered.
+			</p>
+		</div>
+
+		<ul class="divide-y divide-neutral-200 dark:divide-neutral-800">
+			{
+				postsWithReadingTime.map(({ post, readingTime }) => (
+					<li>
+						<a
+							href={`/blog/${post.id}`}
+							class="group block py-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:focus-visible:ring-neutral-300 dark:focus-visible:ring-offset-neutral-900"
+						>
+							<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-500">
+								<time datetime={post.data.pubDate.toISOString()}>
+									{post.data.pubDate.toLocaleDateString("en", {
+										month: "long",
+										day: "numeric",
+										year: "numeric",
+									})}
+								</time>
+								<span>{readingTime.label}</span>
+								{post.data.tags.map((tag) => (
+									<span>#{tag}</span>
+								))}
+							</div>
+							<h2 class="type-item-title mt-2 underline decoration-transparent underline-offset-8 transition group-hover:text-neutral-700 group-hover:decoration-neutral-400 dark:group-hover:text-neutral-300 dark:group-hover:decoration-neutral-600">
+								{post.data.title}
+							</h2>
+							<p class="type-copy mt-2 transition group-hover:text-neutral-800 dark:group-hover:text-neutral-300">
+								{post.data.description}
+							</p>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</BaseLayout>
