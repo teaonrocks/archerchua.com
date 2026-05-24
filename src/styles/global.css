@@ -135,6 +135,18 @@
 		@apply -mx-2 inline-flex min-h-11 items-center px-2 font-medium text-neutral-600 underline decoration-transparent underline-offset-8 transition hover:text-neutral-950 hover:decoration-neutral-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:text-neutral-300 dark:hover:text-white dark:hover:decoration-neutral-600 dark:focus-visible:ring-white dark:focus-visible:ring-offset-neutral-950;
 	}
 
+	.link-list {
+		@apply -mx-2 flex max-w-2xl flex-wrap items-center gap-y-1 text-sm font-medium text-neutral-600 dark:text-neutral-300;
+	}
+
+	.link-list > li {
+		@apply flex items-center;
+	}
+
+	.link-list > li + li::before {
+		@apply mx-3 h-4 w-px bg-neutral-300 content-[''] dark:bg-neutral-700;
+	}
+
 	.prose-article {
 		max-width: var(--measure-prose);
 		color: rgb(64 64 64);
