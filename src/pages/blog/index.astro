@@ -1,10 +1,15 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getReadingTime } from "@/readingTime";
 
 const posts = (await getCollection("blog"))
 	.filter((post) => !post.data.draft)
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const postsWithReadingTime = posts.map((post) => ({
+	post,
+	readingTime: getReadingTime(post.body),
+}));
 
 const title = "Blog | Archer Chua";
 const description =
@@ -21,11 +26,12 @@ const jsonLd = {
 		name: "Archer Chua",
 		url: new URL("/", site).toString(),
 	},
-	blogPost: posts.map((post) => ({
+	blogPost: postsWithReadingTime.map(({ post, readingTime }) => ({
 		"@type": "BlogPosting",
 		headline: post.data.title,
 		url: new URL(`/blog/${post.id}`, site).toString(),
 		datePublished: post.data.pubDate.toISOString(),
+		timeRequired: readingTime.isoDuration,
 	})),
 };
 ---
@@ -46,7 +52,7 @@ const jsonLd = {
 
 		<ul class="divide-y divide-neutral-200 dark:divide-neutral-800">
 			{
-				posts.map((post) => (
+				postsWithReadingTime.map(({ post, readingTime }) => (
 					<li>
 						<a
 							href={`/blog/${post.id}`}
@@ -60,6 +66,7 @@ const jsonLd = {
 										year: "numeric",
 									})}
 								</time>
+								<span>{readingTime.label}</span>
 								{post.data.tags.map((tag) => (
 									<span>#{tag}</span>
 								))}
