@@ -50,7 +50,7 @@ const jsonLd = {
 		<div class="space-y-5">
 			<h1
 				aria-label="Archer Chua"
-				class="type-display max-w-2xl"
+				class="type-display max-w-2xl whitespace-nowrap"
 				data-scramble-name
 			>
 				Archer Chua
@@ -399,23 +399,15 @@ const jsonLd = {
 				class="flex size-4 shrink-0 items-center justify-center text-neutral-950 dark:text-neutral-50"
 				aria-hidden="true"
 			>
-				<CircleCheck
-					class="size-4"
-					stroke-width="2.25"
-					data-toast-icon="success"
-				/>
-				<CircleX
-					class="size-4"
-					stroke-width="2.25"
-					data-toast-icon="error"
-					hidden
-				/>
-				<Download
-					class="size-4"
-					stroke-width="2.25"
-					data-toast-icon="info"
-					hidden
-				/>
+				<span data-toast-icon="success">
+					<CircleCheck class="size-4" stroke-width="2.25" />
+				</span>
+				<span data-toast-icon="error" hidden>
+					<CircleX class="size-4" stroke-width="2.25" />
+				</span>
+				<span data-toast-icon="info" hidden>
+					<Download class="size-4" stroke-width="2.25" />
+				</span>
 			</span>
 			<span class="min-w-0 flex-1 leading-5 tracking-[-0.01em]" data-toast-message
 			></span>

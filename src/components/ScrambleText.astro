@@ -1,0 +1,73 @@
+---
+const { as: Tag = "span", class: className, text } = Astro.props;
+---
+
+<Tag class={className} data-scramble-text={text} aria-label={text}>{text}</Tag>
+
+<script>
+	const prefersReducedMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
+	const characters = "AEFHJKMNRSTVWXYacefhmnrstvwxy137?!/\\|";
+	const frameDuration = 24;
+	const revealSpeed = 0.56;
+	const scrambleRuns = new WeakMap<HTMLElement, number>();
+
+	const scrambleText = (element: HTMLElement, finalText: string) => {
+		return new Promise<boolean>((resolve) => {
+			if (!finalText) {
+				resolve(false);
+				return;
+			}
+
+			const run = (scrambleRuns.get(element) ?? 0) + 1;
+			scrambleRuns.set(element, run);
+
+			if (prefersReducedMotion) {
+				element.textContent = finalText;
+				resolve(true);
+				return;
+			}
+
+			let frame = 0;
+			const finalCharacters = Array.from(finalText);
+
+			const scramble = () => {
+				if (scrambleRuns.get(element) !== run) {
+					resolve(false);
+					return;
+				}
+
+				element.textContent = finalCharacters
+					.map((character, index) => {
+						if (character === " " || index < frame * revealSpeed) {
+							return character;
+						}
+
+						return characters[Math.floor(Math.random() * characters.length)];
+					})
+					.join("");
+
+				if (frame * revealSpeed < finalCharacters.length) {
+					frame += 1;
+					window.setTimeout(scramble, frameDuration);
+					return;
+				}
+
+				element.textContent = finalText;
+				resolve(true);
+			};
+
+			scramble();
+		});
+	};
+
+	document
+		.querySelectorAll<HTMLElement>("[data-scramble-text]")
+		.forEach((element) => {
+			scrambleText(
+				element,
+				element.dataset.scrambleText ?? element.textContent?.trim() ?? "",
+			);
+		});
+</script>
