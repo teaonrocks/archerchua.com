@@ -52,9 +52,9 @@ const jsonLd = {
 					<li>
 						<a
 							href={`/blog/${post.id}`}
-							class="group block py-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:focus-visible:ring-white dark:focus-visible:ring-offset-neutral-950"
+							class="group block py-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:focus-visible:ring-neutral-300 dark:focus-visible:ring-offset-neutral-900"
 						>
-							<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400">
+							<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-500">
 								<time datetime={post.data.pubDate.toISOString()}>
 									{post.data.pubDate.toLocaleDateString("en", {
 										month: "long",
@@ -67,10 +67,10 @@ const jsonLd = {
 									<span>#{tag}</span>
 								))}
 							</div>
-							<h2 class="type-item-title mt-2 underline decoration-transparent underline-offset-8 transition group-hover:text-neutral-700 group-hover:decoration-neutral-400 dark:group-hover:text-neutral-200 dark:group-hover:decoration-neutral-600">
+							<h2 class="type-item-title mt-2 underline decoration-transparent underline-offset-8 transition group-hover:text-neutral-700 group-hover:decoration-neutral-400 dark:group-hover:text-neutral-300 dark:group-hover:decoration-neutral-600">
 								{post.data.title}
 							</h2>
-							<p class="type-copy mt-2 transition group-hover:text-neutral-800 dark:group-hover:text-neutral-200">
+							<p class="type-copy mt-2 transition group-hover:text-neutral-800 dark:group-hover:text-neutral-300">
 								{post.data.description}
 							</p>
 						</a>
