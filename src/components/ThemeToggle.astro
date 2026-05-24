@@ -5,8 +5,9 @@ import { Moon, Sun } from "@lucide/astro";
 <button
 	type="button"
 	data-theme-toggle
-	class="relative inline-flex size-11 items-center justify-center text-neutral-700 transition after:absolute after:left-1/2 after:top-[calc(50%+0.85rem)] after:h-px after:w-4 after:-translate-x-1/2 after:bg-neutral-400 after:opacity-0 after:transition hover:text-neutral-950 hover:after:opacity-100 focus:outline-none focus-visible:after:opacity-100 focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:text-neutral-300 dark:after:bg-neutral-600 dark:hover:text-white dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-950"
+	class="relative inline-flex size-11 items-center justify-center text-neutral-700 transition after:absolute after:left-1/2 after:top-[calc(50%+0.85rem)] after:h-px after:w-4 after:-translate-x-1/2 after:bg-neutral-400 after:opacity-0 after:transition hover:text-neutral-950 hover:after:opacity-100 focus:outline-none focus-visible:after:opacity-100 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:text-neutral-300 dark:after:bg-neutral-600 dark:hover:text-white dark:focus-visible:ring-white dark:focus-visible:ring-offset-neutral-950"
 	aria-label="Switch theme"
+	aria-pressed="false"
 	title="Switch theme"
 >
 	<Moon class="size-4 dark:hidden" aria-hidden="true" />
@@ -19,10 +20,12 @@ import { Moon, Sun } from "@lucide/astro";
 	}
 
 	function updateThemeToggleLabel(button: HTMLButtonElement) {
-		const nextTheme = getTheme() === "dark" ? "light" : "dark";
+		const isDark = getTheme() === "dark";
+		const nextTheme = isDark ? "light" : "dark";
 		const label = `Switch to ${nextTheme} mode`;
 
 		button.setAttribute("aria-label", label);
+		button.setAttribute("aria-pressed", String(isDark));
 		button.setAttribute("title", label);
 	}
 

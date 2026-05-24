@@ -5,12 +5,26 @@ import ThemeToggle from "@/components/ThemeToggle.astro";
 interface Props {
 	title?: string;
 	description?: string;
+	canonicalPath?: string;
+	ogType?: "website" | "article";
+	image?: string;
+	jsonLd?: Record<string, unknown>;
 }
 
 const {
 	title = "Archer Chua",
-	description = "A clean Astro, React, Tailwind, and MDX portfolio base.",
+	description = "Portfolio and writing by Archer Chua, an aspiring software engineer focused on mobile applications, thoughtful products, and practical software projects.",
+	canonicalPath = Astro.url.pathname,
+	ogType = "website",
+	image = "/character-01.png",
+	jsonLd,
 } = Astro.props;
+
+const site = Astro.site ?? new URL("https://archerchua.com");
+const canonicalUrl = new URL(canonicalPath, site).toString();
+const socialImageUrl = new URL(image, site).toString();
+const isHome = Astro.url.pathname === "/";
+const isBlog = Astro.url.pathname.startsWith("/blog");
 ---
 
 <!doctype html>
@@ -19,12 +33,18 @@ const {
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap"
-			rel="stylesheet"
-		/>
+		<link rel="canonical" href={canonicalUrl} />
+		<meta property="og:site_name" content="Archer Chua" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:image:alt" content="Illustration representing Archer Chua" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageUrl} />
 		<link rel="icon" href="/favicon/favicon.ico" sizes="any" />
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
@@ -33,6 +53,7 @@ const {
 		<meta name="theme-color" content="#ffffff" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 		<script is:inline>
 			const storedTheme = localStorage.getItem("theme");
 			const prefersDark = window.matchMedia(
@@ -45,6 +66,7 @@ const {
 		</script>
 	</head>
 	<body>
+		<a class="skip-link" href="#main-content">Skip to content</a>
 		<div class="site-shell">
 			<header class="site-header">
 				<div class="flex flex-wrap items-center justify-start gap-4">
@@ -52,12 +74,14 @@ const {
 						<a
 							class="site-nav-link"
 							href="/"
+							aria-current={isHome ? "page" : undefined}
 						>
 							Home
 						</a>
 						<a
 							class="site-nav-link"
 							href="/blog"
+							aria-current={isBlog ? "page" : undefined}
 						>
 							Blog
 						</a>
@@ -71,7 +95,7 @@ const {
 				</div>
 			</header>
 
-			<main class="site-main">
+			<main id="main-content" class="site-main" tabindex="-1">
 				<slot />
 			</main>
 		</div>

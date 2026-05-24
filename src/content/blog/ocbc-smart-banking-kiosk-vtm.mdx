@@ -5,3 +5,21 @@ pubDate: 2026-05-21
 tags:
   - project
 ---
+
+## Overview
+
+The OCBC Smart Banking Kiosk was a virtual teller prototype exploring how an AI-assisted kiosk could guide customers through common banking workflows. The concept combined voice input, intent routing, guided forms, and live-agent escalation in a single experience.
+
+The prototype focused on making self-service banking feel less intimidating. Instead of expecting customers to know the exact menu path, the kiosk could interpret a request and route them to the right workflow.
+
+## Prototype Flow
+
+The experience started with voice transcription, then passed the interpreted request through a local LLM-powered intent router. From there, the kiosk could launch guided flows for common actions or escalate to a human teller over WebRTC when the request needed support.
+
+Designing the flow meant balancing automation with trust. The prototype needed to be helpful, but it also needed clear handoffs so customers understood when they were speaking to the system and when they were being connected to a person.
+
+## What I Learned
+
+This project helped me think more carefully about AI in high-trust environments. In banking, a smart interface is only useful if it is predictable, explainable, and easy to recover from.
+
+The most useful design pattern was keeping the system narrow: understand the user's intent, guide the next step, and escalate clearly when automation is not the right answer.
