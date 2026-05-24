@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { ChevronRight } from "@lucide/astro";
+import { ChevronRight, CircleCheck, CircleX, Download } from "@lucide/astro";
 
 const projects = [
 	{
@@ -387,14 +387,70 @@ const jsonLd = {
 	</section>
 
 	<div
-		class="pointer-events-none fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 z-50 -translate-x-1/2 translate-y-2 border-y border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-800 opacity-0 shadow-lg shadow-neutral-200/60 transition duration-200 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:shadow-black/20"
+		class="pointer-events-none fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] left-1/2 z-50 w-[min(calc(100%-2rem),22.25rem)] rounded-xl border border-neutral-200 bg-white px-4 py-3.5 text-sm font-medium text-neutral-950 shadow-[0_16px_40px_rgba(0,0,0,0.16)] dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 dark:shadow-black/50 sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))]"
 		role="status"
 		aria-live="polite"
-		hidden
+		aria-hidden="true"
+		data-toast-state="closed"
 		data-toast
 	>
-		<span data-toast-message></span>
+		<span class="flex items-center gap-3">
+			<span
+				class="flex size-4 shrink-0 items-center justify-center text-neutral-950 dark:text-neutral-50"
+				aria-hidden="true"
+			>
+				<CircleCheck
+					class="size-4"
+					stroke-width="2.25"
+					data-toast-icon="success"
+				/>
+				<CircleX
+					class="size-4"
+					stroke-width="2.25"
+					data-toast-icon="error"
+					hidden
+				/>
+				<Download
+					class="size-4"
+					stroke-width="2.25"
+					data-toast-icon="info"
+					hidden
+				/>
+			</span>
+			<span class="min-w-0 flex-1 leading-5 tracking-[-0.01em]" data-toast-message
+			></span>
+		</span>
 	</div>
+
+	<style>
+		[data-toast] {
+			opacity: 0;
+			visibility: hidden;
+			transform: translate3d(-50%, 0.5rem, 0) scale(0.985);
+			transition:
+				opacity 160ms ease,
+				transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+				visibility 0s linear 220ms;
+			will-change: opacity, transform;
+		}
+
+		[data-toast][data-toast-state="open"] {
+			opacity: 1;
+			visibility: visible;
+			transform: translate3d(-50%, 0, 0) scale(1);
+			transition:
+				opacity 140ms ease,
+				transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+				visibility 0s;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			[data-toast] {
+				transition: none;
+				transform: translate3d(-50%, 0, 0);
+			}
+		}
+	</style>
 
 	<script is:inline>
 		const nameHeading = document.querySelector("[data-scramble-name]");
@@ -417,34 +473,28 @@ const jsonLd = {
 		const timelineDuration = 300;
 		let timelineHeightTimeout;
 		let toastTimeout;
-		let toastHideTimeout;
 		const scrambleRuns = new WeakMap();
 
 		const toast = document.querySelector("[data-toast]");
 		const toastMessage = toast?.querySelector("[data-toast-message]");
+		const toastIcons = toast?.querySelectorAll("[data-toast-icon]") ?? [];
 
-		const showToast = (message) => {
+		const showToast = (message, tone = "success") => {
 			if (!toast || !toastMessage) {
 				return;
 			}
 
 			window.clearTimeout(toastTimeout);
-			window.clearTimeout(toastHideTimeout);
 			toastMessage.textContent = message;
-			toast.hidden = false;
-
-			window.requestAnimationFrame(() => {
-				toast.classList.remove("translate-y-2", "opacity-0");
-				toast.classList.add("translate-y-0", "opacity-100");
+			toastIcons.forEach((icon) => {
+				icon.hidden = icon.getAttribute("data-toast-icon") !== tone;
 			});
+			toast.setAttribute("aria-hidden", "false");
+			toast.setAttribute("data-toast-state", "open");
 
 			toastTimeout = window.setTimeout(() => {
-				toast.classList.add("translate-y-2", "opacity-0");
-				toast.classList.remove("translate-y-0", "opacity-100");
-
-				toastHideTimeout = window.setTimeout(() => {
-					toast.hidden = true;
-				}, 200);
+				toast.setAttribute("data-toast-state", "closed");
+				toast.setAttribute("aria-hidden", "true");
 			}, 2200);
 		};
 
@@ -625,14 +675,14 @@ const jsonLd = {
 					await copyToClipboard(email);
 					showToast("Email copied to clipboard");
 				} catch {
-					showToast("Could not copy email");
+					showToast("Could not copy email", "error");
 				}
 			});
 		});
 
 		document.querySelectorAll("[data-resume-download]").forEach((link) => {
 			link.addEventListener("click", () => {
-				showToast("Downloading resume");
+				showToast("Downloading resume", "info");
 			});
 		});
 
