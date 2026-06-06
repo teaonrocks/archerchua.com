@@ -84,6 +84,19 @@ const jsonLd = {
 				<p class="type-lede">
 					{post.data.description}
 				</p>
+				{
+					post.data.github && (
+						<a
+							class="text-action"
+							href={post.data.github}
+							target="_blank"
+							rel="noreferrer"
+							aria-label={`${post.data.title} on GitHub, opens in a new tab`}
+						>
+							GitHub
+						</a>
+					)
+				}
 			</div>
 		</header>
 

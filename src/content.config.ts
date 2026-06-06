@@ -13,6 +13,7 @@ const blog = defineCollection({
 		canonical: z.string().optional(),
 		draft: z.boolean().default(false),
 		tags: z.array(z.string()).default([]),
+		github: z.string().url().optional(),
 	}),
 });
 
