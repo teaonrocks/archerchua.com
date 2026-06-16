@@ -19,6 +19,38 @@ The OCBC VTM is a smart banking kiosk. Customers speak their request; Whisper tr
 
 I chose local AI for privacy (voice data never leaves the machine) and resilience (it works offline). I used a monorepo so I could spin up the entire stack with one command, letting judges see the full flow immediately.
 
+```mermaid width=580
+flowchart TB
+    subgraph kiosk["VTM Kiosk · src/"]
+        direction LR
+        App["TanStack Start + React 19"]
+        Cards["Guided Banking UI"]
+        App --> Cards
+    end
+
+    subgraph ai["Local AI"]
+        direction LR
+        Whisper["Whisper STT"]
+        Ollama["Ollama llama3.2"]
+        Whisper --> Ollama
+    end
+
+    Sig["Signaling Server · WSS"]
+
+    subgraph agentStack["Live Agent · packages/liveAgentPOC"]
+        direction LR
+        Bridge["Ticket Bridge"]
+        Dash["Agent Dashboard"]
+        Bridge --> Dash
+    end
+
+    App -->|"voice"| Whisper
+    Ollama -->|"intent"| Cards
+    App -->|"Live Agent Assist"| Bridge
+    App <-->|"video · audio · screen share"| Sig
+    Dash <-->|"WebRTC"| Sig
+```
+
 ## The Security Nightmare
 
 The biggest challenge was not WebRTC itself; it was making it secure. Everything worked on localhost with HTTP, but the moment we switched to HTTPS for camera access, the system collapsed. My teammate and I spent an entire night debugging why connections would initialise but never establish.
