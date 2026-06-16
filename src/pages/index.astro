@@ -74,7 +74,7 @@ const jsonLd = {
 				<button
 					type="button"
 					class="text-action cursor-pointer bg-transparent text-sm"
-					aria-controls="timeline-list"
+					aria-controls="timeline-content"
 					aria-expanded="false"
 					hidden
 					data-timeline-toggle
@@ -82,9 +82,10 @@ const jsonLd = {
 					View all
 				</button>
 			</div>
+			<div class="max-w-2xl" id="timeline-content" data-timeline-content>
 			<ul
 				id="timeline-list"
-				class="relative max-w-2xl space-y-6 before:absolute before:bottom-2 before:left-0 before:top-2 before:w-px before:-translate-x-1/2 before:bg-neutral-200 dark:before:bg-neutral-800"
+				class="relative space-y-6 before:absolute before:bottom-2 before:left-0 before:top-2 before:w-px before:-translate-x-1/2 before:bg-neutral-200 dark:before:bg-neutral-800"
 			>
 				<li class="relative pl-5">
 					<span
@@ -283,6 +284,22 @@ const jsonLd = {
 					</div>
 				</li>
 			</ul>
+			<div
+				class="type-muted pt-5 pl-5 transition duration-300 ease-out"
+				hidden
+				data-expanded-only
+			>
+				<a
+					class="underline decoration-neutral-300 underline-offset-4 transition hover:text-neutral-700 hover:decoration-neutral-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-50 dark:decoration-neutral-700 dark:hover:text-neutral-300 dark:hover:decoration-neutral-500 dark:focus-visible:ring-neutral-300 dark:focus-visible:ring-offset-neutral-900"
+					href="https://linkedin.com/in/archerchua"
+					target="_blank"
+					rel="noreferrer"
+					aria-label="View Archer Chua's work and education on LinkedIn, opens in a new tab"
+				>
+					More on LinkedIn
+				</a>
+			</div>
+			</div>
 		</div>
 
 		<div class="section-block space-y-5">
@@ -449,6 +466,9 @@ const jsonLd = {
 		const timelineToggle = timelineSection?.querySelector(
 			"[data-timeline-toggle]",
 		);
+		const timelineContent = timelineSection?.querySelector(
+			"[data-timeline-content]",
+		);
 		const timelineList = timelineSection?.querySelector("#timeline-list");
 		const expandedItems =
 			timelineSection?.querySelectorAll("[data-expanded-only]") ?? [];
@@ -567,8 +587,8 @@ const jsonLd = {
 
 		const setExpanded = (isExpanded, shouldAnimateHeading = true) => {
 			const shouldAnimateTimelineHeight =
-				timelineList && !prefersReducedMotion && shouldAnimateHeading;
-			const startHeight = timelineList?.offsetHeight ?? 0;
+				timelineContent && !prefersReducedMotion && shouldAnimateHeading;
+			const startHeight = timelineContent?.offsetHeight ?? 0;
 
 			if (timelineHeading) {
 				const headingText = isExpanded ? "Work & Education" : "Currently";
@@ -595,9 +615,9 @@ const jsonLd = {
 
 			if (shouldAnimateTimelineHeight) {
 				clearTimeout(timelineHeightTimeout);
-				timelineList.style.height = `${startHeight}px`;
-				timelineList.style.clipPath = "inset(0 -0.75rem 0 -0.75rem)";
-				timelineList.style.transition = `height ${timelineDuration}ms ease`;
+				timelineContent.style.height = `${startHeight}px`;
+				timelineContent.style.clipPath = "inset(0 -0.75rem 0 -0.75rem)";
+				timelineContent.style.transition = `height ${timelineDuration}ms ease`;
 			}
 
 			let endHeight = startHeight;
@@ -634,17 +654,17 @@ const jsonLd = {
 
 			if (shouldAnimateTimelineHeight) {
 				if (isExpanded) {
-					endHeight = timelineList.scrollHeight;
+					endHeight = timelineContent.scrollHeight;
 				}
 
 				window.requestAnimationFrame(() => {
-					timelineList.style.height = `${endHeight}px`;
+					timelineContent.style.height = `${endHeight}px`;
 				});
 
 				timelineHeightTimeout = window.setTimeout(() => {
-					timelineList.style.removeProperty("height");
-					timelineList.style.removeProperty("clip-path");
-					timelineList.style.removeProperty("transition");
+					timelineContent.style.removeProperty("height");
+					timelineContent.style.removeProperty("clip-path");
+					timelineContent.style.removeProperty("transition");
 				}, timelineDuration);
 			}
 		};
