@@ -2,9 +2,9 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-	--font-heading: ui-sans-serif, system-ui, sans-serif;
-	--font-body: ui-sans-serif, system-ui, sans-serif;
+@theme inline {
+	--font-heading: var(--font-manrope);
+	--font-body: var(--font-ibm-plex-sans);
 }
 
 @layer base {
@@ -22,8 +22,8 @@
 		--leading-heading: 1.05;
 		--leading-copy: 1.75;
 		--leading-prose: 1.85;
-		--tracking-display: -0.075em;
-		--tracking-heading: -0.045em;
+		--tracking-display: -0.065em;
+		--tracking-heading: -0.04em;
 		--tracking-label: 0.12em;
 	}
 
@@ -262,8 +262,8 @@
 
 	@media (max-width: 640px) {
 		:root {
-			--tracking-display: -0.06em;
-			--tracking-heading: -0.035em;
+			--tracking-display: -0.05em;
+			--tracking-heading: -0.03em;
 			--tracking-label: 0.09em;
 		}
 

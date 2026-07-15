@@ -1,4 +1,5 @@
 ---
+import { Font } from "astro:assets";
 import "../styles/global.css";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 
@@ -53,6 +54,8 @@ const isBlog = Astro.url.pathname.startsWith("/blog");
 		<meta name="theme-color" content="#ffffff" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<Font cssVariable="--font-manrope" preload />
+		<Font cssVariable="--font-ibm-plex-sans" preload />
 		{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 		<script is:inline>
 			const storedTheme = localStorage.getItem("theme");
