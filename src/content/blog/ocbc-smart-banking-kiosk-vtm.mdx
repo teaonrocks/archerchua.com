@@ -26,34 +26,21 @@ The interface had to turn an open-ended sentence into one clear next step. Try a
 
 <VTMIntentDemo />
 
-```mermaid width=580
+```mermaid width=680 minWidth=560
 flowchart TB
-    subgraph kiosk["VTM Kiosk · src/"]
-        direction LR
-        App["TanStack Start + React 19"]
-        Cards["Guided Banking UI"]
-        App --> Cards
-    end
-
-    subgraph ai["Local AI"]
-        direction LR
-        Whisper["Whisper STT"]
-        Ollama["Ollama llama3.2"]
-        Whisper --> Ollama
-    end
-
+    App["VTM Kiosk · TanStack Start + React 19"]
+    Whisper["Local AI · Whisper STT"]
+    Ollama["Local AI · Ollama llama3.2"]
+    Cards["Guided Banking UI"]
+    Bridge["Live Agent · Ticket Bridge"]
+    Dash["Live Agent · Agent Dashboard"]
     Sig["Signaling Server · WSS"]
 
-    subgraph agentStack["Live Agent · packages/liveAgentPOC"]
-        direction LR
-        Bridge["Ticket Bridge"]
-        Dash["Agent Dashboard"]
-        Bridge --> Dash
-    end
-
     App -->|"voice"| Whisper
+    Whisper --> Ollama
     Ollama -->|"intent"| Cards
     App -->|"Live Agent Assist"| Bridge
+    Bridge --> Dash
     App <-->|"video · audio · screen share"| Sig
     Dash <-->|"WebRTC"| Sig
 ```

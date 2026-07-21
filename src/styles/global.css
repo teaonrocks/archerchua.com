@@ -280,13 +280,20 @@
 
 	.mermaid-diagram {
 		margin: 2rem auto;
+		overflow-x: auto;
 		text-align: center;
 	}
 
 	.mermaid-diagram img {
 		display: inline-block;
+		min-width: var(--mermaid-min-width, 0);
 		max-width: 100%;
 		height: auto;
+	}
+
+	.mermaid-diagram[style*="--mermaid-min-width"] img {
+		max-width: none;
+		width: 100%;
 	}
 
 	.mermaid-diagram .mermaid-dark {

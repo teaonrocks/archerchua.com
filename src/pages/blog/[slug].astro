@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import GitHubMark from "@/components/icons/GitHubMark.astro";
 import ScrambleText from "@/components/ScrambleText.astro";
 import { getReadingTime } from "@/readingTime";
 
@@ -87,12 +88,13 @@ const jsonLd = {
 				{
 					post.data.github && (
 						<a
-							class="text-action"
+							class="text-action gap-1.5"
 							href={post.data.github}
 							target="_blank"
 							rel="noreferrer"
 							aria-label={`${post.data.title} on GitHub, opens in a new tab`}
 						>
+							<GitHubMark />
 							GitHub
 						</a>
 					)

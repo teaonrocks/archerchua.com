@@ -14,14 +14,14 @@
 			<div><span>Family</span><small>3 → 1 health</small></div>
 			<div class="hit-slots" data-slots="family" aria-label="0 of 3 family hits"></div>
 			<button type="button" data-add="family">Add pressure</button>
+			<div class="connector" aria-hidden="true">↓</div>
 		</div>
-		<div class="connector" aria-hidden="true">↓</div>
 		<div class="pressure-row">
 			<div><span>Health</span><small>3 → 1 job</small></div>
 			<div class="hit-slots" data-slots="health" aria-label="0 of 3 health hits"></div>
 			<button type="button" data-add="health">Add pressure</button>
+			<div class="connector" aria-hidden="true">↓</div>
 		</div>
-		<div class="connector" aria-hidden="true">↓</div>
 		<div class="pressure-row">
 			<div><span>Job</span><small>3 → unemployed</small></div>
 			<div class="hit-slots" data-slots="job" aria-label="0 of 3 job hits"></div>
@@ -103,40 +103,40 @@
 <style>
 	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
 	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
-	.demo-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
-	.demo-eyebrow { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+	.demo-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+	.demo-eyebrow { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; }
 	h2 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 	:global(.dark) h2 { color: rgb(245 245 245); }
-	.quiet-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; }
+	.quiet-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; line-height: 1.4; }
 	.quiet-button:hover { border-color: rgb(163 163 163); color: rgb(23 23 23); }
 	:global(.dark) .quiet-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
-	.intro { max-width: 36rem; margin: 1.25rem 0 0; color: rgb(82 82 82); line-height: 1.65; }
+	.intro { max-width: 36rem; margin: 1.5rem 0 0; color: rgb(82 82 82); line-height: 1.65; }
 	:global(.dark) .intro { color: rgb(163 163 163); }
 	.pressure-grid { margin-top: 1.5rem; }
-	.pressure-row { display: grid; grid-template-columns: minmax(7rem, 1fr) 7rem auto; align-items: center; gap: 1rem; border-top: 1px solid rgb(229 229 229); padding: .9rem 0; }
+	.pressure-row { position: relative; display: grid; grid-template-columns: minmax(7rem, 1fr) 7rem 6.5rem; align-items: center; gap: 1rem; border-top: 1px solid rgb(229 229 229); padding: 1.25rem 0; }
 	.pressure-row:last-child { border-bottom: 1px solid rgb(229 229 229); }
 	:global(.dark) .pressure-row { border-color: rgb(38 38 38); }
 	.pressure-row span, .pressure-row small { display: block; }
-	.pressure-row span { color: rgb(38 38 38); font-weight: 600; }
-	.pressure-row small { color: rgb(115 115 115); font-size: .75rem; }
+	.pressure-row span { color: rgb(38 38 38); font-weight: 600; line-height: 1.4; }
+	.pressure-row small { color: rgb(115 115 115); font-size: .75rem; line-height: 1.5; }
 	:global(.dark) .pressure-row span { color: rgb(229 229 229); }
 	.hit-slots { display: flex; gap: .4rem; }
 	:global(.hit) { width: .9rem; height: .9rem; border: 1px solid rgb(163 163 163); border-radius: 50%; }
 	:global(.hit.active) { border-color: rgb(64 64 64); background: rgb(64 64 64); }
 	:global(.dark) :global(.hit.active) { border-color: rgb(212 212 212); background: rgb(212 212 212); }
-	.pressure-row button { min-height: 2.5rem; border: 1px solid rgb(212 212 212); padding: .45rem .7rem; color: rgb(82 82 82); font-size: .8rem; font-weight: 600; }
+	.pressure-row button { width: 100%; min-height: 2.5rem; border: 1px solid rgb(212 212 212); padding: .45rem .5rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; line-height: 1.4; white-space: nowrap; }
 	.pressure-row button:hover:not(:disabled) { border-color: rgb(82 82 82); color: rgb(23 23 23); }
 	.pressure-row button:disabled { opacity: .45; }
 	:global(.dark) .pressure-row button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
-	.connector { height: .4rem; margin-left: calc(50% - .5rem); color: rgb(163 163 163); font-size: .8rem; line-height: .4rem; }
-	.system-note { margin: 1rem 0 0; color: rgb(82 82 82); font-size: .875rem; }
+	.connector { position: absolute; top: 75%; grid-column: 2; width: 3.5rem; color: rgb(163 163 163); font-size: .8rem; line-height: 1; text-align: center; transform: translateY(-50%); }
+	.system-note { margin: 1.5rem 0 0; color: rgb(82 82 82); font-size: .875rem; line-height: 1.6; }
 	:global(.dark) .system-note { color: rgb(163 163 163); }
 	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 	@media (max-width: 540px) {
 		.demo-header { display: block; }
 		.quiet-button { margin-top: .9rem; }
-		.pressure-row { grid-template-columns: 1fr auto; }
+		.pressure-row { grid-template-columns: 1fr 6.5rem; }
 		.pressure-row > div:first-child { grid-column: 1 / -1; }
-		.connector { margin-left: 0; text-align: center; }
+		.connector { top: auto; bottom: 1.25rem; grid-column: 1; transform: translateY(50%); }
 	}
 </style>

@@ -38,7 +38,11 @@ export function remarkMermaidTldraw() {
 			const hash = hashMermaid(node.value);
 			const opts = parseMeta(node.meta);
 			const maxWidth = toCssLength(opts["width"]);
-			const style = maxWidth ? ` style="max-width:${maxWidth}"` : "";
+			const minWidth = toCssLength(opts["minWidth"]);
+			const styles = [maxWidth && `max-width:${maxWidth}`, minWidth && `--mermaid-min-width:${minWidth}`].filter(
+				Boolean,
+			);
+			const style = styles.length ? ` style="${styles.join(";")}"` : "";
 
 			const img = (variant: "light" | "dark", suffix: string) =>
 				`<img class="mermaid-${variant}" src="${DIAGRAM_PUBLIC_PREFIX}/${hash}${suffix}.svg"` +
