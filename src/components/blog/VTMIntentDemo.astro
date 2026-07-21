@@ -1,0 +1,137 @@
+<vtm-intent-demo class="interactive-demo">
+	<div class="demo-header">
+		<div>
+			<p class="demo-eyebrow">Voice → intent → interface</p>
+			<h3>Ask the kiosk for help</h3>
+		</div>
+		<span class="local-badge">Runs locally</span>
+	</div>
+
+	<div class="request-list" aria-label="Example voice requests">
+		<button type="button" data-request="remittance" aria-pressed="true">“Send $1,000 to John Doe”</button>
+		<button type="button" data-request="loan" aria-pressed="false">“I need a $20,000 loan for 36 months”</button>
+		<button type="button" data-request="replacement" aria-pressed="false">“I lost my card”</button>
+	</div>
+
+	<div class="pipeline" aria-live="polite">
+		<div>
+			<span>01 · Whisper</span>
+			<strong data-transcript>Send $1,000 to John Doe</strong>
+			<small>Speech transcribed on the kiosk</small>
+		</div>
+		<div class="pipeline-arrow" aria-hidden="true">→</div>
+		<div>
+			<span>02 · Local LLM</span>
+			<strong data-intent>Remittance</strong>
+			<small data-entities>$1,000 · John Doe</small>
+		</div>
+		<div class="pipeline-arrow" aria-hidden="true">→</div>
+		<div>
+			<span>03 · Next step</span>
+			<strong data-next-step>Guided transfer</strong>
+			<small data-policy>Customer reviews and confirms</small>
+		</div>
+	</div>
+</vtm-intent-demo>
+
+<script>
+	type IntentExample = {
+		transcript: string;
+		intent: string;
+		entities: string;
+		nextStep: string;
+		policy: string;
+	};
+
+	const intentExamples: Record<string, IntentExample> = {
+		remittance: {
+			transcript: "Send $1,000 to John Doe",
+			intent: "Remittance",
+			entities: "$1,000 · John Doe",
+			nextStep: "Guided transfer",
+			policy: "Customer reviews and confirms",
+		},
+		loan: {
+			transcript: "I need a $20,000 loan for 36 months",
+			intent: "Loan",
+			entities: "$20,000 · 36 months",
+			nextStep: "Live agent",
+			policy: "High-value request escalated",
+		},
+		replacement: {
+			transcript: "I lost my card",
+			intent: "Card replacement",
+			entities: "Security-sensitive request",
+			nextStep: "Live agent",
+			policy: "Identity checks continue with a human",
+		},
+	};
+
+	class VTMIntentDemo extends HTMLElement {
+		connectedCallback() {
+			this.querySelectorAll<HTMLButtonElement>("[data-request]").forEach((button) => {
+				button.addEventListener("click", () => this.select(button.dataset.request ?? "remittance"));
+			});
+		}
+
+		private select(key: string) {
+			const example = intentExamples[key];
+			if (!example) return;
+			this.querySelectorAll<HTMLButtonElement>("[data-request]").forEach((button) => {
+				button.setAttribute("aria-pressed", String(button.dataset.request === key));
+			});
+			const values: Record<string, string> = {
+				transcript: example.transcript,
+				intent: example.intent,
+				entities: example.entities,
+				"next-step": example.nextStep,
+				policy: example.policy,
+			};
+			Object.entries(values).forEach(([name, value]) => {
+				const element = this.querySelector(`[data-${name}]`);
+				if (element) element.textContent = value;
+			});
+		}
+	}
+
+	if (!customElements.get("vtm-intent-demo")) {
+		customElements.define("vtm-intent-demo", VTMIntentDemo);
+	}
+</script>
+
+<style>
+	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
+	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
+	.demo-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.demo-eyebrow { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+	h3 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+	:global(.dark) h3 { color: rgb(245 245 245); }
+	.local-badge { border: 1px solid rgb(212 212 212); padding: .35rem .55rem; color: rgb(82 82 82); font-size: .72rem; font-weight: 600; white-space: nowrap; }
+	:global(.dark) .local-badge { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	.request-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.4rem; }
+	.request-list button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .75rem; color: rgb(82 82 82); font-size: .82rem; line-height: 1.35; text-align: left; transition: border-color 150ms, background-color 150ms, color 150ms; }
+	.request-list button:hover { border-color: rgb(115 115 115); color: rgb(23 23 23); }
+	.request-list button[aria-pressed="true"] { border-color: rgb(38 38 38); background: rgb(245 245 245); color: rgb(23 23 23); }
+	:global(.dark) .request-list button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	:global(.dark) .request-list button:hover { border-color: rgb(115 115 115); color: rgb(245 245 245); }
+	:global(.dark) .request-list button[aria-pressed="true"] { border-color: rgb(163 163 163); background: rgb(38 38 38); color: rgb(245 245 245); }
+	.pipeline { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; margin-top: 1rem; border-block: 1px solid rgb(229 229 229); }
+	:global(.dark) .pipeline { border-color: rgb(38 38 38); }
+	.pipeline > div:not(.pipeline-arrow) { min-width: 0; padding: 1rem .6rem; }
+	.pipeline > div:first-child { padding-left: 0; }
+	.pipeline > div:last-child { padding-right: 0; }
+	.pipeline span, .pipeline strong, .pipeline small { display: block; }
+	.pipeline span { color: rgb(115 115 115); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
+	.pipeline strong { margin-top: .45rem; color: rgb(38 38 38); font-size: .9rem; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+	.pipeline small { margin-top: .25rem; color: rgb(115 115 115); font-size: .75rem; line-height: 1.45; }
+	:global(.dark) .pipeline strong { color: rgb(229 229 229); }
+	.pipeline-arrow { display: grid; place-items: center; color: rgb(163 163 163); font-size: .85rem; }
+	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+	@media (max-width: 600px) {
+		.demo-header { align-items: start; }
+		.request-list { display: grid; }
+		.pipeline { grid-template-columns: 1fr; }
+		.pipeline > div:not(.pipeline-arrow), .pipeline > div:first-child, .pipeline > div:last-child { padding: .8rem 0; }
+		.pipeline-arrow { height: .5rem; transform: rotate(90deg); }
+	}
+</style>

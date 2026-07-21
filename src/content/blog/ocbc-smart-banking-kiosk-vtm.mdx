@@ -7,6 +7,9 @@ tags:
 github: https://github.com/teaonrocks/ocbc-vtm-poc
 ---
 
+import VTMIntentDemo from "@/components/blog/VTMIntentDemo.astro";
+import VTMHandoffDemo from "@/components/blog/VTMHandoffDemo.astro";
+
 ## The Spark
 
 While brainstorming for OCBC Ignite Innovation Challenge 2025, our lecturer mentoring us dropped a line that stuck: before ATMs, there were human tellers. As a group of Gen Zs, that had honestly never crossed our minds — machines had always been the default. It reframed the whole problem. What if banking could be as natural as talking to a teller, but available 24/7? I pictured a Virtual Teller Machine where customers speak requests to a local AI, and escalate to a human agent with one click when needed.
@@ -18,6 +21,10 @@ I knew React and local AI, but I had never touched WebRTC. Learning an entire pr
 The OCBC VTM is a smart banking kiosk. Customers speak their request; Whisper transcribes it in the browser, a local LLM classifies the intent, and the UI responds with guided workflows for remittances or loan enquiries. When self service fails, one click escalates to a live agent over WebRTC with screen sharing and real time annotations so they can literally point at the problem.
 
 I chose local AI for privacy (voice data never leaves the machine) and resilience (it works offline). I used a monorepo so I could spin up the entire stack with one command, letting judges see the full flow immediately.
+
+The interface had to turn an open-ended sentence into one clear next step. Try a few of the requests below to see how the local pipeline routes each one.
+
+<VTMIntentDemo />
 
 ```mermaid width=580
 flowchart TB
@@ -51,11 +58,19 @@ flowchart TB
     Dash <-->|"WebRTC"| Sig
 ```
 
+## Designing the Handoff
+
+I did not want the AI to bluff its way through every request. Routine tasks such as remittances could stay in a guided flow, while higher-value requests such as loans or card replacements needed a human. The kiosk created a ticket with the customer's context, then connected both sides through WebRTC so the agent could see, speak, share screens, and annotate the interface.
+
+The handoff below is a small version of that journey. Start with the kiosk, request an agent, and watch the same context travel across the system.
+
+<VTMHandoffDemo />
+
 ## The Security Nightmare
 
 The biggest challenge was not WebRTC itself; it was making it secure. Everything worked on localhost with HTTP, but the moment we switched to HTTPS for camera access, the system collapsed. My teammate and I spent an entire night debugging why connections would initialise but never establish.
 
-The root cause was a cascade of security requirements I did not understand: HTTPS for the UI, WSS for the signalling server, HTTPS for the dashboard, and valid TLS certificates for all three, even in local development. Discovering mkcert helped, but wiring each service correctly took until 4 AM. When the agent video finally appeared, the relief was immediate.
+The root cause was a cascade of security requirements I did not understand: HTTPS for the kiosk and agent dashboard, WSS for the signalling server and ticket bridge, and trusted TLS certificates across the stack, even in local development. Discovering mkcert helped, but wiring each service correctly took until 4 AM. When the agent video finally appeared, the relief was immediate.
 
 ## The Result
 

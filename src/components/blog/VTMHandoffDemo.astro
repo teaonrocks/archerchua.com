@@ -1,0 +1,176 @@
+<vtm-handoff-demo class="interactive-demo">
+	<div class="demo-header">
+		<div>
+			<p class="demo-eyebrow">Context-preserving escalation</p>
+			<h3>Hand the customer to a human</h3>
+		</div>
+		<button type="button" class="quiet-button" data-reset>Reset</button>
+	</div>
+
+	<div class="handoff-stage">
+		<div class="surface kiosk-surface">
+			<p class="surface-label">Kiosk · Session 7K3P</p>
+			<strong>Loan enquiry</strong>
+			<dl>
+				<div><dt>Amount</dt><dd>$20,000</dd></div>
+				<div><dt>Tenure</dt><dd>36 months</dd></div>
+			</dl>
+			<button type="button" class="primary-button" data-start>Request live agent</button>
+		</div>
+
+		<div class="handoff-path" aria-label="Handoff progress">
+			<div data-stage="ticket"><i></i><span>Ticket bridge</span></div>
+			<div data-stage="agent"><i></i><span>Agent accepts</span></div>
+			<div data-stage="webrtc"><i></i><span>WebRTC session</span></div>
+		</div>
+
+		<div class="surface agent-surface" data-agent-surface>
+			<p class="surface-label">Live agent</p>
+			<div class="agent-content">
+				<div class="agent-empty" data-agent-empty>
+					<strong>Waiting for a customer</strong>
+					<small>New tickets appear with their context attached.</small>
+				</div>
+				<div class="agent-connected" data-agent-connected hidden>
+					<div class="agent-row"><span>AC</span><p><strong>Archer's kiosk</strong><small>Video · audio · screen</small></p><i>Connected</i></div>
+					<p class="annotation">Agent annotation <b aria-hidden="true">↘</b></p>
+					<p class="shared-context">Loan enquiry · $20,000 · 36 months</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<p class="demo-note" data-note aria-live="polite">The kiosk keeps the request in view while the customer asks for help.</p>
+</vtm-handoff-demo>
+
+<script>
+	class VTMHandoffDemo extends HTMLElement {
+		private running = false;
+		private timers: number[] = [];
+
+		connectedCallback() {
+			this.querySelector("[data-start]")?.addEventListener("click", () => this.start());
+			this.querySelector("[data-reset]")?.addEventListener("click", () => this.reset());
+		}
+
+		disconnectedCallback() {
+			this.clearTimers();
+		}
+
+		private clearTimers() {
+			this.timers.forEach((timer) => window.clearTimeout(timer));
+			this.timers = [];
+		}
+
+		private activate(stage: string, note: string) {
+			this.querySelector(`[data-stage="${stage}"]`)?.setAttribute("data-active", "true");
+			const noteElement = this.querySelector("[data-note]");
+			if (noteElement) noteElement.textContent = note;
+		}
+
+		private start() {
+			if (this.running) return;
+			this.reset(false);
+			this.running = true;
+			const button = this.querySelector<HTMLButtonElement>("[data-start]");
+			if (button) {
+				button.disabled = true;
+				button.textContent = "Request sent";
+			}
+			const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			const delay = (milliseconds: number) => reducedMotion ? 0 : milliseconds;
+			this.timers.push(window.setTimeout(() => this.activate("ticket", "A ticket is created with the loan context attached."), delay(180)));
+			this.timers.push(window.setTimeout(() => this.activate("agent", "The ticket appears in the live agent dashboard."), delay(520)));
+			this.timers.push(window.setTimeout(() => {
+				this.activate("webrtc", "The agent joins with video, audio, screen sharing, and annotations.");
+				const empty = this.querySelector<HTMLElement>("[data-agent-empty]");
+				const connected = this.querySelector<HTMLElement>("[data-agent-connected]");
+				if (empty) empty.hidden = true;
+				if (connected) connected.hidden = false;
+				this.running = false;
+			}, delay(880)));
+		}
+
+		private reset(updateNote = true) {
+			this.clearTimers();
+			this.running = false;
+			this.querySelectorAll<HTMLElement>("[data-stage]").forEach((stage) => stage.removeAttribute("data-active"));
+			const button = this.querySelector<HTMLButtonElement>("[data-start]");
+			const empty = this.querySelector<HTMLElement>("[data-agent-empty]");
+			const connected = this.querySelector<HTMLElement>("[data-agent-connected]");
+			if (button) {
+				button.disabled = false;
+				button.textContent = "Request live agent";
+			}
+			if (empty) empty.hidden = false;
+			if (connected) connected.hidden = true;
+			if (updateNote) {
+				const note = this.querySelector("[data-note]");
+				if (note) note.textContent = "The handoff has been reset.";
+			}
+		}
+	}
+
+	if (!customElements.get("vtm-handoff-demo")) {
+		customElements.define("vtm-handoff-demo", VTMHandoffDemo);
+	}
+</script>
+
+<style>
+	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
+	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
+	.demo-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.demo-eyebrow, .surface-label { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+	h3 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+	:global(.dark) h3 { color: rgb(245 245 245); }
+	.quiet-button, .primary-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .82rem; font-weight: 600; }
+	.quiet-button:hover { border-color: rgb(115 115 115); color: rgb(23 23 23); }
+	.primary-button { width: 100%; margin-top: 1rem; border-color: rgb(23 23 23); background: rgb(23 23 23); color: white; }
+	.primary-button:hover:not(:disabled) { background: rgb(64 64 64); }
+	.primary-button:disabled { opacity: .58; }
+	:global(.dark) .quiet-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	:global(.dark) .primary-button { border-color: rgb(229 229 229); background: rgb(229 229 229); color: rgb(23 23 23); }
+	.handoff-stage { display: grid; grid-template-columns: 1fr 8rem 1fr; align-items: stretch; gap: 1rem; margin-top: 1.4rem; }
+	.surface { min-width: 0; border: 1px solid rgb(212 212 212); padding: 1rem; }
+	:global(.dark) .surface { border-color: rgb(64 64 64); }
+	.surface > strong { display: block; margin-top: .8rem; color: rgb(38 38 38); font-size: 1rem; }
+	:global(.dark) .surface > strong { color: rgb(229 229 229); }
+	dl { margin: .75rem 0 0; }
+	dl div { display: flex; justify-content: space-between; gap: .75rem; border-top: 1px solid rgb(229 229 229); padding: .45rem 0; }
+	:global(.dark) dl div { border-color: rgb(38 38 38); }
+	dt, dd { margin: 0; font-size: .78rem; }
+	dt { color: rgb(115 115 115); }
+	dd { color: rgb(38 38 38); font-weight: 600; }
+	:global(.dark) dd { color: rgb(212 212 212); }
+	.handoff-path { display: grid; align-content: center; gap: .85rem; }
+	.handoff-path div { display: grid; grid-template-columns: .65rem 1fr; align-items: center; gap: .45rem; color: rgb(163 163 163); font-size: .7rem; line-height: 1.25; transition: color 150ms; }
+	.handoff-path i { width: .55rem; height: .55rem; border: 1px solid currentColor; border-radius: 50%; }
+	.handoff-path div[data-active="true"] { color: rgb(38 38 38); }
+	.handoff-path div[data-active="true"] i { background: currentColor; }
+	:global(.dark) .handoff-path div[data-active="true"] { color: rgb(212 212 212); }
+	.agent-content { display: grid; min-height: 9.5rem; align-items: center; }
+	.agent-empty, .agent-connected { grid-area: 1 / 1; }
+	.agent-empty { display: grid; place-content: center; text-align: center; }
+	.agent-empty strong, .agent-empty small { display: block; }
+	.agent-empty strong { color: rgb(82 82 82); font-size: .84rem; }
+	.agent-empty small { max-width: 12rem; margin-top: .35rem; color: rgb(163 163 163); font-size: .72rem; line-height: 1.45; }
+	.agent-row { display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; gap: .55rem; }
+	.agent-row > span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: rgb(229 229 229); color: rgb(82 82 82); font-size: .65rem; font-weight: 700; }
+	.agent-row p { margin: 0; }
+	.agent-row strong, .agent-row small { display: block; }
+	.agent-row strong { color: rgb(38 38 38); font-size: .78rem; }
+	.agent-row small, .agent-row i { color: rgb(115 115 115); font-size: .65rem; font-style: normal; }
+	:global(.dark) .agent-row > span { background: rgb(38 38 38); color: rgb(212 212 212); }
+	:global(.dark) .agent-row strong { color: rgb(229 229 229); }
+	.annotation { margin: 1rem 0 0; color: rgb(115 115 115); font-size: .68rem; }
+	.annotation b { color: rgb(38 38 38); font-size: 1.2rem; }
+	:global(.dark) .annotation b { color: rgb(212 212 212); }
+	.shared-context { margin: -.2rem 0 0; border: 1px dashed rgb(163 163 163); padding: .55rem; color: rgb(82 82 82); font-size: .7rem; }
+	.demo-note { margin: 1rem 0 0; color: rgb(115 115 115); font-size: .8rem; line-height: 1.5; }
+	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+	@media (max-width: 650px) {
+		.handoff-stage { grid-template-columns: 1fr; }
+		.handoff-path { grid-template-columns: repeat(3, 1fr); }
+		.handoff-path div { grid-template-columns: .65rem 1fr; }
+	}
+</style>
