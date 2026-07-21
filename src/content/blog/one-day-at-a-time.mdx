@@ -7,9 +7,17 @@ tags:
 github: https://github.com/teaonrocks/odat
 ---
 
+import ODATDecisionDemo from "@/components/blog/ODATDecisionDemo.astro";
+import ODATConsequenceDemo from "@/components/blog/ODATConsequenceDemo.astro";
+import ODATRealtimeDemo from "@/components/blog/ODATRealtimeDemo.astro";
+
 ## The Activity
 
 ODAT (One Day At a Time) is a project by Youth Corps Singapore. The goal of this activity is for people to step into the shoes of low-income parents and live it for 14 days. Every day, they must make one of two choices that impact how much money they have, their career, their family, or their health. All these choices are logged in an Excel sheet with formulas to display how much money they have left and the status of their career, family, and health.
+
+It is easier to understand the pressure of those choices by making a few yourself. This is a shortened version of the activity using three of the real scenarios.
+
+<ODATDecisionDemo />
 
 ## The Spark
 
@@ -19,11 +27,23 @@ When I went through this activity during MissionX, I found it immensely impactfu
 
 I gathered my courage and pitched the idea to the person who was running the event. Thankfully, she thought that it was an amazing idea as well. Following this, she linked me up with the original creator of this activity, and we started working on the app. She even offered me an internship.
 
+## Turning the Spreadsheet Into a System
+
+The original activity was more than a list of questions. Its Excel formulas connected the decisions together: pressure on the family could become a health problem, health problems could affect employment, and eventually a participant could lose their job. I had to preserve those relationships when I translated the activity into an app.
+
+The interaction below is a simplified view of that consequence system. Three family hits become one health hit, three health hits become one job hit, and three job hits result in unemployment.
+
+<ODATConsequenceDemo />
+
 ## Solving for Scale
 
 One key problem that I had to consider was scale. At these events, there could be hundreds if not thousands of concurrent participants, all needing instant synchronization as they clicked through daily choices. Initially, I leaned toward Firebase because of its real-time capabilities, but the pricing model quickly became a blocker. Firebase Firestore charges per document read, and with thousands of participants updating their status simultaneously, the costs would have spiraled quickly, something a non-profit simply couldn't risk.
 
-To solve this, I decided on Convex, a real-time database service that offers a more predictable free tier. Unlike Firebase, which bills per operation and caps concurrent connections on the free plan, Convex allows for unlimited concurrent users and provides real-time sync out of the box. This meant I could handle the "Kahoot-style" lobby experience where hundreds of phones update simultaneously, without worrying about connection limits or a surprise bill. It also meant I could translate the Excel formulas directly into backend functions while keeping everything responsive.
+To solve this, I decided on Convex, a real-time database service whose model felt more predictable for a non-profit project. Its real-time sync also matched the experience I wanted: a facilitator could advance the activity once and every participant's phone would update together. It also meant I could translate the Excel formulas directly into backend functions while keeping everything responsive.
+
+The example below shows that moment on a smaller scale. Advance the room as the facilitator and watch each participant move to the next day.
+
+<ODATRealtimeDemo />
 
 ## Bridging the Technical Gap
 

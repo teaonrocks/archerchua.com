@@ -1,0 +1,240 @@
+<odat-decision-demo class="interactive-demo">
+	<div class="demo-header">
+		<div>
+			<p class="demo-eyebrow">Example 01 · Playable moment</p>
+			<h2>Make the trade-off yourself</h2>
+		</div>
+		<button type="button" class="quiet-button" data-reset>Start over</button>
+	</div>
+
+	<div class="status-strip" aria-label="Simulation status">
+		<div><span>Cash</span><strong data-cash>$150</strong></div>
+		<div><span>Family</span><strong data-family>0 hits</strong></div>
+		<div><span>Health</span><strong data-health>0 hits</strong></div>
+		<div><span>Job</span><strong data-job>0 hits</strong></div>
+	</div>
+
+	<div class="decision-copy">
+		<p class="day-label" data-day>Day 2 of 14</p>
+		<h3 data-prompt>It’s time to purchase groceries for the week.</h3>
+	</div>
+
+	<div class="choice-grid" data-choices></div>
+
+	<div class="result" data-result aria-live="polite" hidden>
+		<p data-narrative></p>
+		<button type="button" class="primary-button" data-next>Next decision</button>
+	</div>
+</odat-decision-demo>
+
+<script>
+	type Choice = {
+		label: string;
+		cost: number;
+		narrative: string;
+		family?: number;
+		health?: number;
+		job?: number;
+	};
+
+	type Scenario = { day: number; prompt: string; choices: Choice[] };
+
+	const decisionScenarios: Scenario[] = [
+		{
+			day: 2,
+			prompt: "It’s time to purchase groceries for the week.",
+			choices: [
+				{
+					label: "Buy canned food and instant noodles",
+					cost: 70,
+					family: 1,
+					health: 1,
+					narrative: "You kept more cash, but the less nutritious food affected your family and health.",
+				},
+				{
+					label: "Buy fresh food for the week",
+					cost: 140,
+					narrative: "It was expensive, but you provided healthier food for your family.",
+				},
+			],
+		},
+		{
+			day: 3,
+			prompt: "The train breaks down on your first day of work. You are running late.",
+			choices: [
+				{
+					label: "Take a Grab at peak hour",
+					cost: 30,
+					narrative: "A costly ride, but you made it to work on time.",
+				},
+				{
+					label: "Take the bus and arrive late",
+					cost: 3,
+					job: 1,
+					narrative: "You protected your cash, but being late left a bad first impression.",
+				},
+			],
+		},
+		{
+			day: 9,
+			prompt: "Your daughter is invited to a classmate’s birthday party.",
+			choices: [
+				{
+					label: "Let her bring a gift",
+					cost: 20,
+					narrative: "She got to celebrate with her friend and strengthen that friendship.",
+				},
+				{
+					label: "Ask her to decline",
+					cost: 0,
+					family: 1,
+					narrative: "You saved the money, but your daughter felt the cost socially.",
+				},
+			],
+		},
+	];
+
+	class ODATDecisionDemo extends HTMLElement {
+		private scenarioIndex = 0;
+		private cash = 150;
+		private hits = { family: 0, health: 0, job: 0 };
+		private hasChosen = false;
+
+		connectedCallback() {
+			this.querySelector("[data-reset]")?.addEventListener("click", () => this.reset());
+			this.querySelector("[data-next]")?.addEventListener("click", () => this.next());
+			this.render();
+		}
+
+		private reset() {
+			this.scenarioIndex = 0;
+			this.cash = 150;
+			this.hits = { family: 0, health: 0, job: 0 };
+			this.hasChosen = false;
+			this.render();
+		}
+
+		private next() {
+			if (this.scenarioIndex === decisionScenarios.length - 1) {
+				this.reset();
+				return;
+			}
+			this.scenarioIndex += 1;
+			this.hasChosen = false;
+			this.render();
+			this.querySelector<HTMLElement>("[data-prompt]")?.focus();
+		}
+
+		private choose(choice: Choice) {
+			if (this.hasChosen || choice.cost > this.cash) return;
+			this.hasChosen = true;
+			this.cash -= choice.cost;
+			this.hits.family += choice.family ?? 0;
+			this.hits.health += choice.health ?? 0;
+			this.hits.job += choice.job ?? 0;
+			this.renderStatus();
+			this.querySelectorAll<HTMLButtonElement>("[data-choice]").forEach((button) => {
+				button.disabled = true;
+			});
+			const result = this.querySelector<HTMLElement>("[data-result]");
+			const narrative = this.querySelector<HTMLElement>("[data-narrative]");
+			const next = this.querySelector<HTMLButtonElement>("[data-next]");
+			if (narrative) narrative.textContent = choice.narrative;
+			if (next) next.textContent = this.scenarioIndex === decisionScenarios.length - 1 ? "Play again" : "Next decision";
+			if (result) result.hidden = false;
+		}
+
+		private renderStatus() {
+			const values: Record<string, string> = {
+				cash: `$${this.cash}`,
+				family: `${this.hits.family} ${this.hits.family === 1 ? "hit" : "hits"}`,
+				health: `${this.hits.health} ${this.hits.health === 1 ? "hit" : "hits"}`,
+				job: `${this.hits.job} ${this.hits.job === 1 ? "hit" : "hits"}`,
+			};
+			Object.entries(values).forEach(([key, value]) => {
+				const element = this.querySelector(`[data-${key}]`);
+				if (element) element.textContent = value;
+			});
+		}
+
+		private render() {
+			const scenario = decisionScenarios[this.scenarioIndex];
+			if (!scenario) return;
+			this.renderStatus();
+			const day = this.querySelector("[data-day]");
+			const prompt = this.querySelector<HTMLElement>("[data-prompt]");
+			const choices = this.querySelector<HTMLElement>("[data-choices]");
+			const result = this.querySelector<HTMLElement>("[data-result]");
+			if (day) day.textContent = `Day ${scenario.day} of 14`;
+			if (prompt) {
+				prompt.textContent = scenario.prompt;
+				prompt.tabIndex = -1;
+			}
+			if (result) result.hidden = true;
+			if (!choices) return;
+			choices.replaceChildren();
+			scenario.choices.forEach((choice, index) => {
+				const button = document.createElement("button");
+				button.type = "button";
+				button.dataset.choice = String(index);
+				button.className = "choice-button";
+				button.disabled = choice.cost > this.cash;
+				button.innerHTML = `<span>${choice.label}</span><strong>${choice.cost === 0 ? "No cost" : `−$${choice.cost}`}</strong>${choice.cost > this.cash ? "<small>Not enough cash</small>" : ""}`;
+				button.addEventListener("click", () => this.choose(choice));
+				choices.append(button);
+			});
+		}
+	}
+
+	if (!customElements.get("odat-decision-demo")) {
+		customElements.define("odat-decision-demo", ODATDecisionDemo);
+	}
+</script>
+
+<style>
+	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
+	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
+	.demo-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.demo-eyebrow, .day-label { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+	h2 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+	:global(.dark) h2, :global(.dark) h3 { color: rgb(245 245 245); }
+	.quiet-button, .primary-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; transition: background-color 150ms, color 150ms, border-color 150ms; }
+	.quiet-button:hover { border-color: rgb(163 163 163); color: rgb(23 23 23); }
+	.primary-button { border-color: rgb(23 23 23); background: rgb(23 23 23); color: white; }
+	.primary-button:hover { background: rgb(64 64 64); }
+	:global(.dark) .quiet-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	:global(.dark) .quiet-button:hover { border-color: rgb(115 115 115); color: rgb(245 245 245); }
+	:global(.dark) .primary-button { border-color: rgb(229 229 229); background: rgb(229 229 229); color: rgb(23 23 23); }
+	.status-strip { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 1.5rem; border-block: 1px solid rgb(229 229 229); }
+	:global(.dark) .status-strip { border-color: rgb(38 38 38); }
+	.status-strip div { padding: .75rem 0; }
+	.status-strip span, .status-strip strong { display: block; }
+	.status-strip span { color: rgb(115 115 115); font-size: .75rem; }
+	.status-strip strong { color: rgb(38 38 38); font-size: .9rem; font-weight: 600; }
+	:global(.dark) .status-strip strong { color: rgb(229 229 229); }
+	.decision-copy { margin-top: 1.5rem; }
+	h3 { max-width: 34rem; margin: .5rem 0 0; color: rgb(38 38 38); font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; line-height: 1.45; letter-spacing: -.02em; }
+	.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.25rem; }
+	:global(.choice-button) { min-height: 8rem; border: 1px solid rgb(212 212 212); padding: 1rem; text-align: left; transition: border-color 150ms, background-color 150ms; }
+	:global(.choice-button:hover:not(:disabled)) { border-color: rgb(82 82 82); background: rgb(250 250 250); }
+	:global(.choice-button span), :global(.choice-button strong), :global(.choice-button small) { display: block; }
+	:global(.choice-button span) { color: rgb(38 38 38); font-weight: 500; line-height: 1.45; }
+	:global(.choice-button strong) { margin-top: .7rem; color: rgb(82 82 82); font-size: .875rem; }
+	:global(.choice-button small) { margin-top: .25rem; color: rgb(163 163 163); }
+	:global(.choice-button:disabled) { cursor: not-allowed; opacity: .48; }
+	:global(.dark) :global(.choice-button) { border-color: rgb(64 64 64); }
+	:global(.dark) :global(.choice-button:hover:not(:disabled)) { border-color: rgb(163 163 163); background: rgb(38 38 38); }
+	:global(.dark) :global(.choice-button span) { color: rgb(229 229 229); }
+	:global(.dark) :global(.choice-button strong) { color: rgb(163 163 163); }
+	.result { margin-top: .75rem; border-left: 2px solid rgb(82 82 82); padding: .75rem 0 .75rem 1rem; }
+	.result p { margin: 0 0 .8rem; color: rgb(82 82 82); line-height: 1.6; }
+	:global(.dark) .result p { color: rgb(163 163 163); }
+	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+	@media (max-width: 540px) {
+		.demo-header { display: block; }
+		.quiet-button { margin-top: .9rem; }
+		.status-strip { grid-template-columns: repeat(2, 1fr); }
+		.choice-grid { grid-template-columns: 1fr; }
+		:global(.choice-button) { min-height: 6.5rem; }
+	}
+</style>

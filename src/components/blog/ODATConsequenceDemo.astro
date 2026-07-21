@@ -1,0 +1,142 @@
+<odat-consequence-demo class="interactive-demo">
+	<div class="demo-header">
+		<div>
+			<p class="demo-eyebrow">Example 02 · Explorable system</p>
+			<h2>See how one pressure becomes another</h2>
+		</div>
+		<button type="button" class="quiet-button" data-reset>Reset</button>
+	</div>
+
+	<p class="intro">In ODAT, three family hits become one health hit. Three health hits become one job hit. Three job hits mean unemployment.</p>
+
+	<div class="pressure-grid">
+		<div class="pressure-row">
+			<div><span>Family</span><small>3 → 1 health</small></div>
+			<div class="hit-slots" data-slots="family" aria-label="0 of 3 family hits"></div>
+			<button type="button" data-add="family">Add pressure</button>
+		</div>
+		<div class="connector" aria-hidden="true">↓</div>
+		<div class="pressure-row">
+			<div><span>Health</span><small>3 → 1 job</small></div>
+			<div class="hit-slots" data-slots="health" aria-label="0 of 3 health hits"></div>
+			<button type="button" data-add="health">Add pressure</button>
+		</div>
+		<div class="connector" aria-hidden="true">↓</div>
+		<div class="pressure-row">
+			<div><span>Job</span><small>3 → unemployed</small></div>
+			<div class="hit-slots" data-slots="job" aria-label="0 of 3 job hits"></div>
+			<button type="button" data-add="job">Add pressure</button>
+		</div>
+	</div>
+
+	<p class="system-note" data-note aria-live="polite">Add pressure anywhere in the chain to explore the rule.</p>
+</odat-consequence-demo>
+
+<script>
+	type Pressure = "family" | "health" | "job";
+
+	class ODATConsequenceDemo extends HTMLElement {
+		private hits: Record<Pressure, number> = { family: 0, health: 0, job: 0 };
+		private unemployed = false;
+
+		connectedCallback() {
+			this.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => {
+				button.addEventListener("click", () => this.add(button.dataset.add as Pressure));
+			});
+			this.querySelector("[data-reset]")?.addEventListener("click", () => this.reset());
+			this.render();
+		}
+
+		private add(type: Pressure) {
+			if (this.unemployed) return;
+			this.hits[type] += 1;
+			let note = `Added one ${type} hit.`;
+			if (type === "family" && this.hits.family === 3) {
+				this.hits.family = 0;
+				this.hits.health += 1;
+				note = "Three family hits rolled into one health hit.";
+			}
+			if (this.hits.health === 3) {
+				this.hits.health = 0;
+				this.hits.job += 1;
+				note = "Three health hits rolled into one job hit.";
+			}
+			if (this.hits.job >= 3) {
+				this.hits.job = 3;
+				this.unemployed = true;
+				note = "Three job hits: you are now unemployed.";
+			}
+			this.render(note);
+		}
+
+		private reset() {
+			this.hits = { family: 0, health: 0, job: 0 };
+			this.unemployed = false;
+			this.render("The chain has been reset.");
+		}
+
+		private render(note?: string) {
+			(["family", "health", "job"] as Pressure[]).forEach((type) => {
+				const container = this.querySelector<HTMLElement>(`[data-slots="${type}"]`);
+				if (!container) return;
+				container.replaceChildren();
+				for (let index = 0; index < 3; index += 1) {
+					const slot = document.createElement("span");
+					slot.className = index < this.hits[type] ? "hit active" : "hit";
+					container.append(slot);
+				}
+				container.setAttribute("aria-label", `${this.hits[type]} of 3 ${type} hits`);
+			});
+			this.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => {
+				button.disabled = this.unemployed;
+			});
+			const noteElement = this.querySelector("[data-note]");
+			if (noteElement && note) noteElement.textContent = note;
+		}
+	}
+
+	if (!customElements.get("odat-consequence-demo")) {
+		customElements.define("odat-consequence-demo", ODATConsequenceDemo);
+	}
+</script>
+
+<style>
+	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
+	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
+	.demo-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.demo-eyebrow { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+	h2 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+	:global(.dark) h2 { color: rgb(245 245 245); }
+	.quiet-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; }
+	.quiet-button:hover { border-color: rgb(163 163 163); color: rgb(23 23 23); }
+	:global(.dark) .quiet-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	.intro { max-width: 36rem; margin: 1.25rem 0 0; color: rgb(82 82 82); line-height: 1.65; }
+	:global(.dark) .intro { color: rgb(163 163 163); }
+	.pressure-grid { margin-top: 1.5rem; }
+	.pressure-row { display: grid; grid-template-columns: minmax(7rem, 1fr) 7rem auto; align-items: center; gap: 1rem; border-top: 1px solid rgb(229 229 229); padding: .9rem 0; }
+	.pressure-row:last-child { border-bottom: 1px solid rgb(229 229 229); }
+	:global(.dark) .pressure-row { border-color: rgb(38 38 38); }
+	.pressure-row span, .pressure-row small { display: block; }
+	.pressure-row span { color: rgb(38 38 38); font-weight: 600; }
+	.pressure-row small { color: rgb(115 115 115); font-size: .75rem; }
+	:global(.dark) .pressure-row span { color: rgb(229 229 229); }
+	.hit-slots { display: flex; gap: .4rem; }
+	:global(.hit) { width: .9rem; height: .9rem; border: 1px solid rgb(163 163 163); border-radius: 50%; }
+	:global(.hit.active) { border-color: rgb(64 64 64); background: rgb(64 64 64); }
+	:global(.dark) :global(.hit.active) { border-color: rgb(212 212 212); background: rgb(212 212 212); }
+	.pressure-row button { min-height: 2.5rem; border: 1px solid rgb(212 212 212); padding: .45rem .7rem; color: rgb(82 82 82); font-size: .8rem; font-weight: 600; }
+	.pressure-row button:hover:not(:disabled) { border-color: rgb(82 82 82); color: rgb(23 23 23); }
+	.pressure-row button:disabled { opacity: .45; }
+	:global(.dark) .pressure-row button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	.connector { height: .4rem; margin-left: calc(50% - .5rem); color: rgb(163 163 163); font-size: .8rem; line-height: .4rem; }
+	.system-note { margin: 1rem 0 0; color: rgb(82 82 82); font-size: .875rem; }
+	:global(.dark) .system-note { color: rgb(163 163 163); }
+	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+	@media (max-width: 540px) {
+		.demo-header { display: block; }
+		.quiet-button { margin-top: .9rem; }
+		.pressure-row { grid-template-columns: 1fr auto; }
+		.pressure-row > div:first-child { grid-column: 1 / -1; }
+		.connector { margin-left: 0; text-align: center; }
+	}
+</style>

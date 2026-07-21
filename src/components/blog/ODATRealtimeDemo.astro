@@ -1,0 +1,122 @@
+<odat-realtime-demo class="interactive-demo">
+	<div class="demo-header">
+		<div>
+			<p class="demo-eyebrow">Example 03 · Living architecture</p>
+			<h2>Advance the room in real time</h2>
+		</div>
+		<p class="room-code">Room · ODAT</p>
+	</div>
+
+	<div class="host-row">
+		<div>
+			<span>Facilitator</span>
+			<strong data-host-day>Day 4</strong>
+		</div>
+		<button type="button" class="advance-button" data-advance>Advance to Day 5</button>
+	</div>
+
+	<div class="participant-list" aria-label="Participant devices">
+		<div data-participant><span aria-hidden="true">AC</span><p><strong>Amelia</strong><small data-device-day>Waiting on Day 4</small></p><i data-state>Synced</i></div>
+		<div data-participant><span aria-hidden="true">BK</span><p><strong>Ben</strong><small data-device-day>Waiting on Day 4</small></p><i data-state>Synced</i></div>
+		<div data-participant><span aria-hidden="true">CL</span><p><strong>Chloe</strong><small data-device-day>Waiting on Day 4</small></p><i data-state>Synced</i></div>
+		<div data-participant><span aria-hidden="true">DN</span><p><strong>Danial</strong><small data-device-day>Waiting on Day 4</small></p><i data-state>Synced</i></div>
+	</div>
+
+	<p class="demo-note" data-note aria-live="polite">A small illustration of the lobby behavior—not a live backend connection.</p>
+</odat-realtime-demo>
+
+<script>
+	class ODATRealtimeDemo extends HTMLElement {
+		private day = 4;
+		private running = false;
+
+		connectedCallback() {
+			this.querySelector("[data-advance]")?.addEventListener("click", () => this.advance());
+		}
+
+		private advance() {
+			if (this.running) return;
+			this.running = true;
+			this.day = this.day === 14 ? 1 : this.day + 1;
+			const hostDay = this.querySelector("[data-host-day]");
+			const button = this.querySelector<HTMLButtonElement>("[data-advance]");
+			const participants = this.querySelectorAll<HTMLElement>("[data-participant]");
+			const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			if (hostDay) hostDay.textContent = `Day ${this.day}`;
+			if (button) {
+				button.disabled = true;
+				button.textContent = "Syncing…";
+			}
+			participants.forEach((participant) => {
+				participant.dataset.syncing = "true";
+				const state = participant.querySelector("[data-state]");
+				if (state) state.textContent = "Updating";
+			});
+
+			let completed = 0;
+			participants.forEach((participant, index) => {
+				window.setTimeout(() => {
+					delete participant.dataset.syncing;
+					const deviceDay = participant.querySelector("[data-device-day]");
+					const state = participant.querySelector("[data-state]");
+					if (deviceDay) deviceDay.textContent = `Choosing on Day ${this.day}`;
+					if (state) state.textContent = "Synced";
+					completed += 1;
+					if (completed === participants.length) {
+						this.running = false;
+						if (button) {
+							button.disabled = false;
+							button.textContent = `Advance to Day ${this.day === 14 ? 1 : this.day + 1}`;
+						}
+						const note = this.querySelector("[data-note]");
+						if (note) note.textContent = `All four devices moved to Day ${this.day}.`;
+					}
+				}, prefersReducedMotion ? 0 : 160 + index * 170);
+			});
+		}
+	}
+
+	if (!customElements.get("odat-realtime-demo")) {
+		customElements.define("odat-realtime-demo", ODATRealtimeDemo);
+	}
+</script>
+
+<style>
+	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
+	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
+	.demo-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+	.demo-eyebrow { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+	h2 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+	:global(.dark) h2 { color: rgb(245 245 245); }
+	.room-code { margin: .15rem 0 0; color: rgb(115 115 115); font-family: ui-monospace, monospace; font-size: .75rem; }
+	.host-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; border-block: 1px solid rgb(229 229 229); padding: 1rem 0; }
+	:global(.dark) .host-row { border-color: rgb(38 38 38); }
+	.host-row span, .host-row strong { display: block; }
+	.host-row span { color: rgb(115 115 115); font-size: .75rem; }
+	.host-row strong { color: rgb(38 38 38); font-size: 1.05rem; }
+	:global(.dark) .host-row strong { color: rgb(229 229 229); }
+	.advance-button { min-height: 2.75rem; border: 1px solid rgb(23 23 23); background: rgb(23 23 23); padding: .55rem .85rem; color: white; font-size: .875rem; font-weight: 600; }
+	.advance-button:hover:not(:disabled) { background: rgb(64 64 64); }
+	.advance-button:disabled { opacity: .65; }
+	:global(.dark) .advance-button { border-color: rgb(229 229 229); background: rgb(229 229 229); color: rgb(23 23 23); }
+	.participant-list > div { display: grid; grid-template-columns: 2.25rem 1fr auto; align-items: center; gap: .75rem; border-bottom: 1px solid rgb(229 229 229); padding: .75rem 0; transition: opacity 150ms; }
+	:global(.dark) .participant-list > div { border-color: rgb(38 38 38); }
+	.participant-list > div[data-syncing="true"] { opacity: .45; }
+	.participant-list > div > span { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: rgb(229 229 229); color: rgb(64 64 64); font-size: .7rem; font-weight: 700; }
+	:global(.dark) .participant-list > div > span { background: rgb(38 38 38); color: rgb(212 212 212); }
+	.participant-list p { margin: 0; }
+	.participant-list strong, .participant-list small { display: block; }
+	.participant-list strong { color: rgb(38 38 38); font-size: .875rem; }
+	.participant-list small { color: rgb(115 115 115); font-size: .75rem; }
+	:global(.dark) .participant-list strong { color: rgb(229 229 229); }
+	.participant-list i { color: rgb(115 115 115); font-size: .75rem; font-style: normal; }
+	.participant-list i::before { display: inline-block; width: .4rem; height: .4rem; margin-right: .4rem; border-radius: 50%; background: rgb(82 82 82); content: ""; }
+	.demo-note { margin: 1rem 0 0; color: rgb(115 115 115); font-size: .8rem; line-height: 1.5; }
+	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+	@media (max-width: 540px) {
+		.demo-header { display: block; }
+		.room-code { margin-top: .75rem; }
+		.host-row { align-items: start; flex-direction: column; }
+		.advance-button { width: 100%; }
+	}
+</style>
