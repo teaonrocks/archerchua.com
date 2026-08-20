@@ -1,7 +1,6 @@
 <vtm-handoff-demo class="interactive-demo">
 	<div class="demo-header">
 		<div>
-			<p class="demo-eyebrow">Context-preserving escalation</p>
 			<h3>Hand the customer to a human</h3>
 		</div>
 		<button type="button" class="quiet-button" data-reset>Reset</button>
@@ -120,8 +119,8 @@
 	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
 	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
 	.demo-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-	.demo-eyebrow, .surface-label { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; }
-	h3 { margin: .35rem 0 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
+	.surface-label { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; }
+	h3 { margin: 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 	:global(.dark) h3 { color: rgb(245 245 245); }
 	.quiet-button, .primary-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; line-height: 1.4; }
 	.quiet-button:hover { border-color: rgb(115 115 115); color: rgb(23 23 23); }
