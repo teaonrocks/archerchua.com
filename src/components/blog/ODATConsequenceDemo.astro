@@ -1,10 +1,5 @@
 <odat-consequence-demo class="interactive-demo">
-	<div class="demo-header">
-		<div>
-			<h2>See how one pressure becomes another</h2>
-		</div>
-		<button type="button" class="quiet-button" data-reset>Reset</button>
-	</div>
+	<h2>See how one pressure becomes another</h2>
 
 	<p class="intro">In ODAT, three family hits become one health hit. Three health hits become one job hit. Three job hits mean unemployment.</p>
 
@@ -28,7 +23,10 @@
 		</div>
 	</div>
 
-	<p class="system-note" data-note aria-live="polite">Add pressure anywhere in the chain to explore the rule.</p>
+	<div class="demo-footer">
+		<p class="system-note" data-note aria-live="polite">Add pressure anywhere in the chain to explore the rule.</p>
+		<button type="button" class="reset-button" data-reset>Reset</button>
+	</div>
 </odat-consequence-demo>
 
 <script>
@@ -102,12 +100,8 @@
 <style>
 	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
 	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
-	.demo-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 	h2 { margin: 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 	:global(.dark) h2 { color: rgb(245 245 245); }
-	.quiet-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; line-height: 1.4; }
-	.quiet-button:hover { border-color: rgb(163 163 163); color: rgb(23 23 23); }
-	:global(.dark) .quiet-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
 	.intro { max-width: 36rem; margin: 1.5rem 0 0; color: rgb(82 82 82); line-height: 1.65; }
 	:global(.dark) .intro { color: rgb(163 163 163); }
 	.pressure-grid { margin-top: 1.5rem; }
@@ -127,12 +121,15 @@
 	.pressure-row button:disabled { opacity: .45; }
 	:global(.dark) .pressure-row button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
 	.connector { position: absolute; top: 75%; grid-column: 2; width: 3.5rem; color: rgb(163 163 163); font-size: .8rem; line-height: 1; text-align: center; transform: translateY(-50%); }
-	.system-note { margin: 1.5rem 0 0; color: rgb(82 82 82); font-size: .875rem; line-height: 1.6; }
+	.demo-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+	.system-note { margin: 0; color: rgb(82 82 82); font-size: .875rem; line-height: 1.6; }
 	:global(.dark) .system-note { color: rgb(163 163 163); }
+	.reset-button { flex: none; min-height: 2.5rem; border: 1px solid rgb(212 212 212); padding: .45rem .7rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; line-height: 1.4; }
+	.reset-button:hover { border-color: rgb(82 82 82); color: rgb(23 23 23); }
+	:global(.dark) .reset-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
+	:global(.dark) .reset-button:hover { border-color: rgb(115 115 115); color: rgb(245 245 245); }
 	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 	@media (max-width: 540px) {
-		.demo-header { display: block; }
-		.quiet-button { margin-top: .9rem; }
 		.pressure-row { grid-template-columns: 1fr 6.5rem; }
 		.pressure-row > div:first-child { grid-column: 1 / -1; }
 		.connector { top: auto; bottom: 1.25rem; grid-column: 1; transform: translateY(50%); }

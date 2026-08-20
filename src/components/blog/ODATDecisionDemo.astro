@@ -1,10 +1,5 @@
 <odat-decision-demo class="interactive-demo">
-	<div class="demo-header">
-		<div>
-			<h2>Make the trade-off yourself</h2>
-		</div>
-		<button type="button" class="quiet-button" data-reset>Start over</button>
-	</div>
+	<h2>Make the trade-off yourself</h2>
 
 	<div class="status-strip" aria-label="Simulation status">
 		<div><span>Cash</span><strong data-cash>$150</strong></div>
@@ -13,16 +8,22 @@
 		<div><span>Job</span><strong data-job>0 hits</strong></div>
 	</div>
 
-	<div class="decision-copy">
-		<p class="day-label" data-day>Day 2 of 14</p>
-		<h3 data-prompt>It’s time to purchase groceries for the week.</h3>
-	</div>
+	<div class="decision-stage">
+		<div class="decision-panel" data-decision-panel>
+			<div class="decision-copy">
+				<p class="day-label" data-day>Day 2 of 14</p>
+				<h3 data-prompt>It’s time to purchase groceries for the week.</h3>
+			</div>
 
-	<div class="choice-grid" data-choices></div>
+			<div class="choice-grid" data-choices></div>
+		</div>
 
-	<div class="result" data-result aria-live="polite" hidden>
-		<p data-narrative></p>
-		<button type="button" class="primary-button" data-next>Next decision</button>
+		<div class="replacement-panel" data-result aria-live="polite" aria-hidden="true" inert>
+			<p class="result-label">Your choice</p>
+			<h3 data-result-choice>Your decision</h3>
+			<p class="narrative" data-narrative>The result of your choice appears here.</p>
+			<button type="button" class="primary-button" data-next>Next decision</button>
+		</div>
 	</div>
 </odat-decision-demo>
 
@@ -100,8 +101,8 @@
 		private hasChosen = false;
 
 		connectedCallback() {
-			this.querySelector("[data-reset]")?.addEventListener("click", () => this.reset());
 			this.querySelector("[data-next]")?.addEventListener("click", () => this.next());
+			this.closeResult();
 			this.render();
 		}
 
@@ -110,6 +111,7 @@
 			this.cash = 150;
 			this.hits = { family: 0, health: 0, job: 0 };
 			this.hasChosen = false;
+			this.closeResult();
 			this.render();
 		}
 
@@ -120,8 +122,9 @@
 			}
 			this.scenarioIndex += 1;
 			this.hasChosen = false;
+			this.closeResult();
 			this.render();
-			this.querySelector<HTMLElement>("[data-prompt]")?.focus();
+			this.querySelector<HTMLElement>("[data-prompt]")?.focus({ preventScroll: true });
 		}
 
 		private choose(choice: Choice) {
@@ -135,12 +138,32 @@
 			this.querySelectorAll<HTMLButtonElement>("[data-choice]").forEach((button) => {
 				button.disabled = true;
 			});
+			const decision = this.querySelector<HTMLElement>("[data-decision-panel]");
 			const result = this.querySelector<HTMLElement>("[data-result]");
 			const narrative = this.querySelector<HTMLElement>("[data-narrative]");
+			const resultChoice = this.querySelector<HTMLElement>("[data-result-choice]");
 			const next = this.querySelector<HTMLButtonElement>("[data-next]");
 			if (narrative) narrative.textContent = choice.narrative;
+			if (resultChoice) resultChoice.textContent = choice.label;
 			if (next) next.textContent = this.scenarioIndex === decisionScenarios.length - 1 ? "Play again" : "Next decision";
-			if (result) result.hidden = false;
+			decision?.classList.add("is-hidden");
+			decision?.setAttribute("aria-hidden", "true");
+			decision?.setAttribute("inert", "");
+			result?.classList.add("is-visible");
+			result?.setAttribute("aria-hidden", "false");
+			result?.removeAttribute("inert");
+			next?.focus({ preventScroll: true });
+		}
+
+		private closeResult() {
+			const decision = this.querySelector<HTMLElement>("[data-decision-panel]");
+			const result = this.querySelector<HTMLElement>("[data-result]");
+			decision?.classList.remove("is-hidden");
+			decision?.removeAttribute("aria-hidden");
+			decision?.removeAttribute("inert");
+			result?.classList.remove("is-visible");
+			result?.setAttribute("aria-hidden", "true");
+			result?.setAttribute("inert", "");
 		}
 
 		private renderStatus() {
@@ -163,13 +186,11 @@
 			const day = this.querySelector("[data-day]");
 			const prompt = this.querySelector<HTMLElement>("[data-prompt]");
 			const choices = this.querySelector<HTMLElement>("[data-choices]");
-			const result = this.querySelector<HTMLElement>("[data-result]");
 			if (day) day.textContent = `Day ${scenario.day} of 14`;
 			if (prompt) {
 				prompt.textContent = scenario.prompt;
 				prompt.tabIndex = -1;
 			}
-			if (result) result.hidden = true;
 			if (!choices) return;
 			choices.replaceChildren();
 			scenario.choices.forEach((choice, index) => {
@@ -193,16 +214,11 @@
 <style>
 	.interactive-demo { display: block; border-block: 1px solid rgb(229 229 229); padding-block: 1.5rem; }
 	:global(.dark) .interactive-demo { border-color: rgb(38 38 38); }
-	.demo-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 	.day-label { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; }
 	h2 { margin: 0; color: rgb(23 23 23); font-family: var(--font-heading); font-size: clamp(1.35rem, 4vw, 1.7rem); font-weight: 700; line-height: 1.2; letter-spacing: -.03em; }
 	:global(.dark) h2, :global(.dark) h3 { color: rgb(245 245 245); }
-	.quiet-button, .primary-button { min-height: 2.75rem; border: 1px solid rgb(212 212 212); padding: .55rem .8rem; color: rgb(82 82 82); font-size: .875rem; font-weight: 600; line-height: 1.4; transition: background-color 150ms, color 150ms, border-color 150ms; }
-	.quiet-button:hover { border-color: rgb(163 163 163); color: rgb(23 23 23); }
-	.primary-button { border-color: rgb(23 23 23); background: rgb(23 23 23); color: white; }
+	.primary-button { min-height: 2.75rem; border: 1px solid rgb(23 23 23); background: rgb(23 23 23); padding: .55rem .8rem; color: white; font-size: .875rem; font-weight: 600; line-height: 1.4; transition: background-color 150ms, color 150ms, border-color 150ms; }
 	.primary-button:hover { background: rgb(64 64 64); }
-	:global(.dark) .quiet-button { border-color: rgb(64 64 64); color: rgb(163 163 163); }
-	:global(.dark) .quiet-button:hover { border-color: rgb(115 115 115); color: rgb(245 245 245); }
 	:global(.dark) .primary-button { border-color: rgb(229 229 229); background: rgb(229 229 229); color: rgb(23 23 23); }
 	.status-strip { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 1.5rem; border-block: 1px solid rgb(229 229 229); }
 	:global(.dark) .status-strip { border-color: rgb(38 38 38); }
@@ -211,8 +227,13 @@
 	.status-strip span { color: rgb(115 115 115); font-size: .75rem; line-height: 1.5; }
 	.status-strip strong { color: rgb(38 38 38); font-size: .9rem; font-weight: 600; line-height: 1.5; }
 	:global(.dark) .status-strip strong { color: rgb(229 229 229); }
-	.decision-copy { margin-top: 1.5rem; }
+	.result-label { margin: 0; color: rgb(115 115 115); font-size: .75rem; font-weight: 600; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; }
+	.decision-stage { display: grid; margin-top: 1.5rem; }
+	.decision-stage > * { grid-area: 1 / 1; }
+	.decision-panel { transition: opacity 160ms ease, transform 160ms ease; }
+	.decision-panel.is-hidden { visibility: hidden; opacity: 0; transform: translateY(-.35rem); }
 	h3 { max-width: 34rem; margin: .5rem 0 0; color: rgb(38 38 38); font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; line-height: 1.45; letter-spacing: -.02em; }
+	.decision-copy h3 { min-height: 3.34rem; }
 	.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.25rem; }
 	:global(.choice-button) { min-height: 8rem; border: 1px solid rgb(212 212 212); padding: 1rem; text-align: left; transition: border-color 150ms, background-color 150ms; }
 	:global(.choice-button:hover:not(:disabled)) { border-color: rgb(82 82 82); background: rgb(250 250 250); }
@@ -225,13 +246,16 @@
 	:global(.dark) :global(.choice-button:hover:not(:disabled)) { border-color: rgb(163 163 163); background: rgb(38 38 38); }
 	:global(.dark) :global(.choice-button span) { color: rgb(229 229 229); }
 	:global(.dark) :global(.choice-button strong) { color: rgb(163 163 163); }
-	.result { margin-top: .75rem; border-left: 2px solid rgb(82 82 82); padding: .75rem 0 .75rem 1rem; }
-	.result p { margin: 0 0 .8rem; color: rgb(82 82 82); line-height: 1.6; }
-	:global(.dark) .result p { color: rgb(163 163 163); }
+	.replacement-panel { visibility: hidden; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; border-left: 2px solid rgb(82 82 82); padding: 1.25rem 0 1.25rem 1.25rem; opacity: 0; transform: translateY(.35rem); transition: opacity 160ms ease, transform 160ms ease; }
+	.replacement-panel.is-visible { visibility: visible; opacity: 1; transform: none; }
+	.narrative { max-width: 36rem; margin: .75rem 0 0; color: rgb(82 82 82); line-height: 1.65; }
+	:global(.dark) .narrative { color: rgb(163 163 163); }
+	.replacement-panel .primary-button { margin-top: 1.25rem; }
 	button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+	@media (prefers-reduced-motion: reduce) {
+		.decision-panel, .replacement-panel { transition: none; }
+	}
 	@media (max-width: 540px) {
-		.demo-header { display: block; }
-		.quiet-button { margin-top: .9rem; }
 		.status-strip { grid-template-columns: repeat(2, 1fr); }
 		.choice-grid { grid-template-columns: 1fr; }
 		:global(.choice-button) { min-height: 6.5rem; }
